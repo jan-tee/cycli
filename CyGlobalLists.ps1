@@ -29,7 +29,7 @@ function Get-CyGlobalList {
         }
     }
 
-    Get-CyDataPages -API $API -Uri "$($API.BaseUri)/globallists/v2" -QueryParams @{ "listTypeId" = $APIListType }
+    Read-CyData -API $API -Uri "$($API.BaseUrl)/globallists/v2" -QueryParams @{ "listTypeId" = $APIListType }
 }
 
 <#
@@ -101,7 +101,7 @@ function Add-CyHashToGlobalList {
 
         $json = $updateMap | ConvertTo-Json
         # remain silent
-        $output = Invoke-RestMethod -Method POST -Uri "$($API.BaseUri)/globallists/v2" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
+        $output = Invoke-RestMethod -Method POST -Uri "$($API.BaseUrl)/globallists/v2" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
     }
 }
 
@@ -149,6 +149,6 @@ function Remove-CyHashFromGlobalList {
         }
 
         $json = $updateMap | ConvertTo-Json
-        $output = Invoke-RestMethod -Method DELETE -Uri "$($API.BaseUri)/globallists/v2" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
+        $output = Invoke-RestMethod -Method DELETE -Uri "$($API.BaseUrl)/globallists/v2" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
     }
 }

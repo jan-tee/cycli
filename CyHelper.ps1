@@ -53,7 +53,7 @@ function Convert-FromCSVDate {
     )
     $Data | ForEach-Object {
         # each row
-        foreach ($field in $Fields) {
+        ForEach ($field in $Fields) {
             if (![string]::IsNullOrWhiteSpace($_.$field)) {
                 try {
                     $t = $_.$field
@@ -77,7 +77,7 @@ function Convert-FromCSVDate {
 #>
 function Get-CyConsoleConfig {
     @("$($HOME)\TDRs\", "$($HOME)" ) | 
-        foreach {
+        ForEach-Object {
             if (Test-Path -Path "$($_)\consoles.json" -PathType Leaf) {
                 # PowerShell parser chokes on JS comments... pffft
                 $script:ConsolesJsonPath = "$($_)\consoles.json"
@@ -117,34 +117,35 @@ function New-CyConsoleConfig {
         [parameter(Mandatory=$true)]
         [String]$Console,
         [parameter(Mandatory=$true)]
-        [String]$Id,
+        [String]$APIId,
         [parameter(Mandatory=$true)]
-        [String]$Secret,
+        [SecureString]$APISecret,
         [parameter(Mandatory=$true)]
-        [String]$TenantId,
+        [String]$APITenantId,
         [parameter(Mandatory=$false)]
         [String]$Token,
         [parameter(Mandatory=$false)]
         [String]$TDRUrl = "https://protect-euc1.cylance.com/Reports/ThreatDataReportV1/",
         [parameter(Mandatory=$false)]
-        [String]$Uri = "https://protectapi-euc1.cylance.com/auth/v2/token"
+        [String]$APIAuthUrl = "https://protectapi-euc1.cylance.com/auth/v2/token"
         )
         $Consoles = Get-CyConsoleConfig
         if ($script:ConsolesJsonPath -eq $null) {
             $script:ConsolesJsonPath = "$($HOME)\consoles.json"
         }
         try {
-            $handle = CyAPIHandle -Id $id -Secret $Secret -TenantId $TenantId -Uri $Uri -Scope None
+            # was: $APISecret = Read-Host -AsSecureString
+            $DPAPISecret = ConvertFrom-SecureString -SecureString $APISecret
+            $handle = CyAPIHandle -APIId $id -APISecret $Secret -APITenantId $APITenantId -APIAuthUrl $APIAuthUrl -Scope None
             # https://social.technet.microsoft.com/wiki/contents/articles/4546.working-with-passwords-secure-strings-and-credentials-in-windows-powershell.aspx
-            $DPAPISecret = ConvertTo-SecureString -String $Secret -AsPlainText -Force | ConvertFrom-SecureString
             $NewConsole = @{
                     ConsoleId = $Console
                     AutoRetrieve = $true
-                    APIId = $Id
+                    APIId = $APIId
                     APISecret = $DPAPISecret
                     APISecretIsProtected = $true
-                    APITenantId = $TenantId
-                    APIUrl = $Uri
+                    APITenantId = $APITenantId
+                    APIUrl = $APIAuthUrl
                     Token = $Token
                     TDRUrl = $TDRUrl
                 }
@@ -176,7 +177,7 @@ function Remove-CyConsoleConfig {
     }
 
     Process {
-        $Consoles = (Get-CyConsoleConfig) | Where ConsoleId -ne $PSBoundParameters.Console
+        $Consoles = (Get-CyConsoleConfig) | Where-Object ConsoleId -ne $PSBoundParameters.Console
         ConvertTo-Json $Consoles | Out-File -FilePath $script:ConsolesJsonPath -Force
     }
 }
@@ -202,7 +203,7 @@ function Get-CyConsoleArgumentAutoCompleter {
         [parameter(Mandatory=$False)]
         [Switch]$AllowMultiple = $False,
         [parameter(Mandatory=$False)]
-        [Switch]$Mandatory = $True,
+        [Switch]$Mandatory,
         [parameter(Mandatory=$True)]
         [String]$ParameterName,
         [parameter(Mandatory=$False)]

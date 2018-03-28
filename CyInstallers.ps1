@@ -40,5 +40,5 @@ function Get-CyAgentInstallerLink {
             "Accept" = "application/json"
             "Authorization" = "Bearer $($API.AccessToken)"
         }
-        Invoke-RestMethod -Method GET -Uri  "$($API.BaseUri)/devices/v2/installer?product=$($Product)&os=$($OS)&package=$($Package)&architecture=$($Architecture)" -Header $headers -UserAgent ""
+        Invoke-RestMethod -Method GET -Uri  "$($API.BaseUrl)/devices/v2/installer?product=$($Product)&os=$($OS)&package=$($Package)&architecture=$($Architecture)" -Header $headers -UserAgent ""
 }

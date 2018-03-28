@@ -29,10 +29,10 @@ function Get-CyDeviceList {
             Get-CyDeviceList -API $API -Zone $Zone
         }
         "ByZone" {
-            Get-CyDataPages -API $API -Uri "$($API.BaseUri)/devices/v2/$($Zone.id)/devices"
+            Read-CyData -API $API -Uri "$($API.BaseUrl)/devices/v2/$($Zone.id)/devices"
         }
         "All" {
-            Get-CyDataPages -API $API -Uri "$($API.BaseUri)/devices/v2"
+            Read-CyData -API $API -Uri "$($API.BaseUrl)/devices/v2"
         }
     }
 }
@@ -100,7 +100,7 @@ function Remove-CyDevice {
         $json = $updateMap | ConvertTo-Json
         Write-verbose "Update Map: $($json)"
         # remain silent
-        $output = Invoke-RestMethod -Method DELETE -Uri "$($API.BaseUri)/devices/v2" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
+        $output = Invoke-RestMethod -Method DELETE -Uri "$($API.BaseUrl)/devices/v2" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
     }
 }
 
@@ -112,9 +112,9 @@ function Remove-CyDevice {
     Optional. API Handle (use only when not using session scope).
 
 .PARAMETER Device
-    The device to retrieve the details for.
+    The device to retrieve the Detail for.
 #>
-function Get-CyDeviceDetails {
+function Get-CyDeviceDetail {
     Param (
         [parameter(Mandatory=$false)]
         [ValidateNotNullOrEmpty()]
@@ -131,7 +131,7 @@ function Get-CyDeviceDetails {
             "Accept" = "application/json"
             "Authorization" = "Bearer $($API.AccessToken)"
         }
-        Invoke-RestMethod -Method GET -Uri  "$($API.BaseUri)/devices/v2/$($Device.id)" -Header $headers -UserAgent "" | Convert-CyTypes
+        Invoke-RestMethod -Method GET -Uri  "$($API.BaseUrl)/devices/v2/$($Device.id)" -Header $headers -UserAgent "" | Convert-CyObject
     }
 }
 
@@ -143,9 +143,9 @@ function Get-CyDeviceDetails {
     Optional. API Handle (use only when not using session scope).
 
 .PARAMETER Device
-    The device to retrieve the details for.
+    The device to retrieve the Detail for.
 #>
-function Get-CyDeviceDetailsByMac {
+function Get-CyDeviceDetailByMac {
     Param (
         [parameter(Mandatory=$false)]
         [ValidateNotNullOrEmpty()]
@@ -162,6 +162,6 @@ function Get-CyDeviceDetailsByMac {
             "Accept" = "application/json"
             "Authorization" = "Bearer $($API.AccessToken)"
         }
-        Invoke-RestMethod -Method GET -Uri  "$($API.BaseUri)/devices/v2/macaddress/$($MAC)" -Header $headers -UserAgent ""
+        Invoke-RestMethod -Method GET -Uri  "$($API.BaseUrl)/devices/v2/macaddress/$($MAC)" -Header $headers -UserAgent ""
     }
 }

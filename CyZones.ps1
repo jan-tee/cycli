@@ -25,27 +25,27 @@ function Get-CyZoneList {
 
     switch ($PSCmdlet.ParameterSetName) {
         "ByDeviceName" {
-            $Device = Get-CyDeviceList | where name -eq $DeviceName
+            $Device = Get-CyDeviceList | Where-Object name -eq $DeviceName
             Get-CyZoneList -API $API -Device $Device
         }
         "ByDevice" {
-            Get-CyDataPages -API $API -Uri "$($API.BaseUri)/zones/v2/$($Device.id)/zones"
+            Read-CyData -API $API -Uri "$($API.BaseUrl)/zones/v2/$($Device.id)/zones"
         }
         "All" {
-            Get-CyDataPages -API $API -Uri "$($API.BaseUri)/zones/v2"
+            Read-CyData -API $API -Uri "$($API.BaseUrl)/zones/v2"
         }
     }
 }
 
 <#
 .SYNOPSIS
-    Retrieves the given ZONE details from the console. Gets full data, not a shallow version.
+    Retrieves the given ZONE Detail from the console. Gets full data, not a shallow version.
 
 .PARAMETER API
     Optional. API Handle (use only when not using session scope).
 
 .PARAM Zone
-    The zone object to fetch details for.
+    The zone object to fetch Detail for.
 
 .PARAM ZoneName
     The zone name to fetch the zone object for.
@@ -76,7 +76,7 @@ function Get-CyZone {
         {
             "ByZoneName" {
                 Write-Verbose "Get-CyZone: Getting zone by name '$($Name)'"
-                Get-CyZoneList | Where name -eq $Name
+                Get-CyZoneList | Where-Object name -eq $Name
             }
             "ByZoneObject" {
                 Write-Verbose "Get-CyZone: Getting zone via zone object for zone ID '$($Zone.id)'"
@@ -84,7 +84,7 @@ function Get-CyZone {
                     "Accept" = "application/json"
                     "Authorization" = "Bearer $($API.AccessToken)"
                 }
-                Invoke-RestMethod -Method GET -Uri  "$($API.BaseUri)/zones/v2/$($Zone.id)" -Header $headers -UserAgent ""
+                Invoke-RestMethod -Method GET -Uri  "$($API.BaseUrl)/zones/v2/$($Zone.id)" -Header $headers -UserAgent ""
             }
         }
     }
@@ -135,7 +135,7 @@ function New-CyZone{
         }
 
         $json = $updateMap | ConvertTo-Json
-        Invoke-RestMethod -Method POST -Uri "$($API.BaseUri)/zones/v2" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
+        Invoke-RestMethod -Method POST -Uri "$($API.BaseUrl)/zones/v2" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
     }
 }
 
@@ -179,7 +179,7 @@ function Remove-CyZone {
                 Remove-CyZone -API $API -Zone $Zone
             }
             "ByZone" {
-                Invoke-RestMethod -Method DELETE -Uri "$($API.BaseUri)/zones/v2/$($Zone.id)" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent ""
+                Invoke-RestMethod -Method DELETE -Uri "$($API.BaseUrl)/zones/v2/$($Zone.id)" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent ""
             }
         }
     }
@@ -235,7 +235,7 @@ function Add-CyDeviceToZone {
 
         $json = $updateMap | ConvertTo-Json
         # remain silent
-        $output = Invoke-RestMethod -Method PUT -Uri "$($API.BaseUri)/devices/v2/$($Device.id)" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
+        $output = Invoke-RestMethod -Method PUT -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
     }
 }
 <#
@@ -288,6 +288,6 @@ function Remove-CyDeviceFromZone {
 
         $json = $updateMap | ConvertTo-Json
         # remain silent
-        $output = Invoke-RestMethod -Method PUT -Uri "$($API.BaseUri)/devices/v2/$($Device.id)" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
+        $output = Invoke-RestMethod -Method PUT -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
     }
 }

@@ -11,7 +11,7 @@ function Get-CyPolicyList {
         [CylanceAPIHandle]$API = $GlobalCyAPIHandle
         )
 
-    Get-CyDataPages -API $API -Uri "$($API.BaseUri)/policies/v2"
+    Read-CyData -API $API -Uri "$($API.BaseUrl)/policies/v2"
 }
 
 <#
@@ -47,7 +47,7 @@ function Set-CyPolicyForDevice {
             "Authorization" = "Bearer $($API.AccessToken)"
         }
 
-        if ($Policy.id -eq $null) {
+        if ($null -eq $Policy.id) {
             throw "Policy object does not contain 'id' property."
         }
     }
@@ -60,7 +60,7 @@ function Set-CyPolicyForDevice {
 
         $json = $updateMap | ConvertTo-Json
         # remain silent
-        $output = Invoke-RestMethod -Method PUT -Uri "$($API.BaseUri)/devices/v2/$($Device.id)" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
+        $output = Invoke-RestMethod -Method PUT -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
     }
 }
 
@@ -72,7 +72,7 @@ function Set-CyPolicyForDevice {
     Optional. API Handle (use only when not using session scope).
 
 .PARAMETER Policy
-    The device to retrieve the details for.
+    The device to retrieve the Detail for.
 #>
 function Get-CyPolicy {
     Param (
@@ -91,6 +91,6 @@ function Get-CyPolicy {
             "Accept" = "application/json"
             "Authorization" = "Bearer $($API.AccessToken)"
         }
-        Invoke-RestMethod -Method GET -Uri  "$($API.BaseUri)/policies/v2/$($Policy.id)" -Header $headers -UserAgent "" | Convert-CyTypes
+        Invoke-RestMethod -Method GET -Uri  "$($API.BaseUrl)/policies/v2/$($Policy.id)" -Header $headers -UserAgent "" | Convert-CyObject
     }
 }

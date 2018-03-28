@@ -5,10 +5,10 @@
         [CylanceAPIHandle]$API = $GlobalCyAPIHandle
         )
 
-    Get-CyDataPages -API $API -Uri "$($API.BaseUri)/users/v2"
+    Read-CyData -API $API -Uri "$($API.BaseUrl)/users/v2"
 }
 
-function Get-CyUserDetails {
+function Get-CyUserDetail {
     Param (
         [parameter(Mandatory=$false)]
         [ValidateNotNullOrEmpty()]
@@ -27,14 +27,14 @@ function Get-CyUserDetails {
 
         switch ($PSCmdlet.ParameterSetName) {
             "ByUserIdOrEmail" {
-                $url = "$($API.BaseUri)/users/v2/$($UserId)"
+                $url = "$($API.BaseUrl)/users/v2/$($UserId)"
             }
             "ByUser" {
-                $url = "$($API.BaseUri)/users/v2/$($User.id)"
+                $url = "$($API.BaseUrl)/users/v2/$($User.id)"
             }
         }
 
-        # Get-CyDataPages -API $API -Uri $url
-        Invoke-RestMethod -Method GET -Uri $url -Header $headers -UserAgent "" | Convert-CyTypes
+        # Read-CyData -API $API -Uri $url
+        Invoke-RestMethod -Method GET -Uri $url -Header $headers -UserAgent "" | Convert-CyObject
     }
 }

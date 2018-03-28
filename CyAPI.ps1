@@ -11,20 +11,19 @@
     Use:
 
     Call "Get-CyAPI -SetGlobalScope" to use the same API for subsequent calls
-    Get-Devices | Get-DeviceDetails
+    Get-Devices | Get-DeviceDetail
 
 .LINK
     Blog: http://tietze.io/
     Jan Tietze
 #>
 
-
 <#
     Represents the API handle returned by API after authentication
 #>
 Class CylanceAPIHandle {
     [string]$AccessToken
-    [string]$BaseUri
+    [string]$BaseUrl
 }
 
 <#
@@ -46,17 +45,17 @@ Class CylanceThreat {
 .SYNOPSIS
     Gets an API access token for the authenticated access to the Console API, valid for 30 minutes.
 
-.PARAMETER Id
+.PARAMETER APIId
     Optional. API ID
 
-.PARAMETER Secret
+.PARAMETER APISecret
     Optional. API Secret
 
-.PARAMETER TenantId
+.PARAMETER APITenantId
     Optional. API Tenant ID
 
-.PARAMETER Uri
-    Optional. URI to obtain token, e.g. "https://protectapi<-region>.cylance.com/auth/v2/token". Defaults to EUC1 region.
+.PARAMETER APIAuthUrl
+    Optional. URL to obtain token, e.g. "https://protectapi<-region>.cylance.com/auth/v2/token". Defaults to EUC1 region. Use value from the API documentation.
 
 .PARAMETER Scope
     Optional. If you need to access multiple tenants in parallel, use "None" as scope and collect the API object returned.
@@ -67,13 +66,13 @@ Class CylanceThreat {
 function Get-CyAPI {
     Param (
         [parameter(Mandatory=$true, ParameterSetName="Direct")]
-        [String]$Id,
+        [String]$APIId,
         [parameter(Mandatory=$true, ParameterSetName="Direct")]
-        [String]$Secret,
+        [SecureString]$APISecret,
         [parameter(Mandatory=$true, ParameterSetName="Direct")]
-        [String]$TenantId,
-        [parameter(Mandatory=$true, ParameterSetName="Direct")]
-        [String]$Uri = "https://protectapi-euc1.cylance.com/auth/v2/token",
+        [String]$APITenantId,
+        [parameter(Mandatory=$false, ParameterSetName="Direct")]
+        [String]$APIAuthUrl = "https://protectapi-euc1.cylance.com/auth/v2/token",
         [parameter(Mandatory=$false)]
         [ValidateSet ("Session", "None")]
         [String]$Scope = "Session"
@@ -87,15 +86,20 @@ function Get-CyAPI {
         {
             "Direct"
             {
+                # decrypt DPAPI protected string into SecureString
+                # https://social.technet.microsoft.com/wiki/contents/articles/4546.working-with-passwords-secure-strings-and-credentials-in-windows-powershell.aspx
+                $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($APISecret)
+                $pw = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+
                 $claims = @{}
 
                 $jwtBearerToken = Get-JWTToken `
                     -claims $claims `
                     -expirationSeconds 1800 `
-                    -secret $Secret `
+                    -secret $pw `
                     -iss "http://cylance.com" `
-                    -tid $TenantId `
-                    -APIid $Id
+                    -tid $APITenantId `
+                    -APIid $APIId
 
                 $payload = @{ "auth_token" = $jwtBearerToken } | ConvertTo-Json
 
@@ -103,14 +107,13 @@ function Get-CyAPI {
                    $headers = @{
                         "Accept" = "*/*"
                         }
-                    $result = Invoke-RestMethod -Method Post -Uri $Uri -ContentType "application/json; charset=utf-8" -UserAgent "" -Body $payload
+                    $result = Invoke-RestMethod -Method Post -Uri $APIAuthUrl -ContentType "application/json; charset=utf-8" -UserAgent "" -Body $payload -Headers $headers
                 }
                 catch {
                     $result = $_.Exception.Response.GetResponseStream()
                     $reader = New-Object System.IO.StreamReader($result)
                     $reader.BaseStream.Position = 0
                     $reader.DiscardBufferedData()
-                    $responseBody = $reader.ReadToEnd();
                     Write-Error "Could not get valid API token."
                     if ($Scope -eq "None") {
                         $script:GlobalCyAPIHandle = $null
@@ -119,11 +122,11 @@ function Get-CyAPI {
                     return
                 }
 
-                $baseUri = ([System.Uri]$Uri).Scheme + "://" + ([System.Uri]$Uri).Host
+                $baseUrl = ([System.Uri]$APIAuthUrl).Scheme + "://" + ([System.Uri]$APIAuthUrl).Host
 
                 [CylanceAPIHandle]$r = New-Object CylanceAPIHandle
                 $r.AccessToken = $result.access_token
-                $r.BaseUri = $baseUri
+                $r.BaseUrl = $baseUrl
 
                 if ($Scope -eq "Session") {
                     $script:GlobalCyAPIHandle = $r
@@ -133,24 +136,21 @@ function Get-CyAPI {
             }
         "ByReference" 
             {
-                $ConsoleDetails = (Get-CyConsoleConfig) | Where ConsoleId -eq $PSBoundParameters.Console
+                $ConsoleDetails = (Get-CyConsoleConfig) | Where-Object ConsoleId -eq $PSBoundParameters.Console
 
-                if ($ConsoleDetails.APISecretIsProtected) {
-                    # https://social.technet.microsoft.com/wiki/contents/articles/4546.working-with-passwords-secure-strings-and-credentials-in-windows-powershell.aspx
-                    $SecureStringPw = $ConsoleDetails.APISecret | ConvertTo-SecureString
-                    $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureStringPw)
-                    $pw = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
-                } else {
-                    $pw = $ConsoleDetails.APISecret
+                # decrypt DPAPI protected string into SecureString
+                # https://social.technet.microsoft.com/wiki/contents/articles/4546.working-with-passwords-secure-strings-and-credentials-in-windows-powershell.aspx
+                $SecureStringPw = $ConsoleDetails.APISecret | ConvertTo-SecureString
+
+                if ($null -ne $ConsoleDetails.APIUrl) { 
+                    $APIAuthUrl = $ConsoleDetails.APIUrl
                 }
-
-                if ($ConsoleDetails.APIUrl -ne $null) { $Uri = $ConsoleDetails.APIUrl }
                 $args = @{
-                    Id = $ConsoleDetails.APIId
-                    Secret = $pw
-                    TenantId = $ConsoleDetails.APITenantId
+                    APIId = $ConsoleDetails.APIId
+                    APISecret = $SecureStringPw
+                    APITenantId = $ConsoleDetails.APITenantId
                     Scope = $Scope
-                    Uri = $Uri
+                    APIAuthUrl = $APIAuthUrl
                 }
                 Get-CyAPI @args
             }
@@ -171,7 +171,7 @@ function Get-CyAPI {
 .PARAMETER QueryParams
     Optional. If you need to add any query parameters, supply them in a Hashtable.
 #>
-function Get-CyDataPages {
+function Read-CyData {
     Param (
         [parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
@@ -200,7 +200,7 @@ function Get-CyDataPages {
         }
 
         foreach ($key in $params.Keys) {
-            Write-Verbose "Get-CyDataPages: GET ${Uri} | $($key) = $($params.$key)"
+            Write-Verbose "Read-CyData: GET ${Uri} | $($key) = $($params.$key)"
         }
         $resp = Invoke-RestMethod `
             -Method GET `
@@ -209,7 +209,7 @@ function Get-CyDataPages {
             -UserAgent "" -Body $params `
 
         $resp.page_items | foreach-object {
-            $_ | Convert-CyTypes
+            $_ | Convert-CyObject
         }
         Write-Verbose "Response was page $($resp.page_number) of $($resp.total_pages) pages"
 
@@ -244,7 +244,7 @@ function Get-CyDateFromString {
     return [DateTime]::ParseExact($Date, "yyyy-MM-ddTHH:mm:ss.FFF", [Globalization.CultureInfo]::InvariantCulture, [Globalization.DateTimeStyles]::AssumeUniversal)
 }
 
-function Convert-CyTypes {
+function Convert-CyObject {
     Param (
         [Parameter(Mandatory=$true, Position=1, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)]
         [PSCustomObject]$CyObject
@@ -255,7 +255,7 @@ function Convert-CyTypes {
     Process {
         foreach ($f in $fields) {
             try {
-                if (($CyObject.$f -ne $null) -and ($CyObject.$f -isnot [DateTime])) {
+                if (($null -ne $CyObject.$f) -and ($CyObject.$f -isnot [DateTime])) {
                     $CyObject.$f = Get-CyDateFromString $CyObject.$f
                 }
             } catch [FormatException] {

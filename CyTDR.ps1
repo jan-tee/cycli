@@ -75,10 +75,10 @@ function Get-CyTDRs {
             "Direct" {
             }
             "ByReference" {
-                $ConsoleDetails = (Get-CyConsoleConfig) | Where ConsoleId -eq $PSBoundParameters.Console
+                $ConsoleDetails = (Get-CyConsoleConfig) | Where-Object ConsoleId -eq $PSBoundParameters.Console
                 $Id = $ConsoleDetails.ConsoleId
                 $AccessToken = $ConsoleDetails.Token
-                if (($ConsoleDetails.TDRUrl -ne $null) -and ([String]::Empty -ne $ConsoleDetails.TDRUrl)) {
+                if (($null -ne $ConsoleDetails.TDRUrl) -and ([String]::Empty -ne $ConsoleDetails.TDRUrl)) {
                     $TDRUrl = $ConsoleDetails.TDRUrl
                 }
             }
@@ -172,7 +172,7 @@ function Convert-CyTDRsToXLSX {
             # "devices": created, "Online Date", "Offline Date" => 11/2/2017 10:54:32 AM
             # "cleared": "Date Removed" => 11/24/2017 10:02:49 AM
 
-            if ($data -eq $null) { continue }
+            if ($null -eq $data) { continue }
 
             switch ($TDRType) {
                 "threats" {
@@ -192,7 +192,9 @@ function Convert-CyTDRsToXLSX {
                     $Data = Convert-FromCSVDate -Data $Data -Fields @("Created", "Online Date", "Offline Date")
                 }
                 "cleared" {                
-                    $Data = Convert-FromCSVDate -Data $Data -Fields @("Date Removed")                }
+                    $Data = Convert-FromCSVDate -Data $Data -Fields @("Date Removed")
+
+                }
             }
 
             $Data | Export-Excel $OutputXLSX -WorkSheetname $TDRType -AutoSize -TableName "${TDRType}Table"
@@ -208,8 +210,8 @@ function Convert-CyTDRsToXLSX {
     $ConsoleId = $s[2].Value
     $TDRType = $s[3].Value
     $Timestamp = $s[4].Value
-    $ConsoleId2 = $s[5].Value
-    $ReportType2 = $s[6].Value
+    # $ConsoleId2 = $s[5].Value
+    # $ReportType2 = $s[6].Value
 
     # Generate Excel summary file from TDRs
     $OutputXLSX = $TDRPath + "\" + $ConsoleId + "\" + $Timestamp + "_" + $ConsoleId + ".xlsx"

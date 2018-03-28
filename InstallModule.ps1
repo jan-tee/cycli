@@ -49,7 +49,7 @@ Process {
         }
 
         $Files | 
-            ForEach-Object { Get-ChildItem (Join-Path -Path $PSScriptRoot -ChildPath $_) } |
+            ForEach-Object { Get-ChildItem (Join-Path -Path $SourcePath -ChildPath $_) } |
             ForEach-Object {
                 $Destination = Join-Path $TargetPath -ChildPath $_.Name
                 Copy-Item -Path $_.FullName -Destination $Destination

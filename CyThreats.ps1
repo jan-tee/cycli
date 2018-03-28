@@ -8,7 +8,7 @@
 .PARAMETER Device
     The device to retrieve the threats for.
 #>
-function Get-CyDeviceThreats {
+function Get-CyDeviceThreatList {
     Param (
         [parameter(Mandatory=$false)]
         [ValidateNotNullOrEmpty()]
@@ -22,14 +22,14 @@ function Get-CyDeviceThreats {
     Process {
         switch ($PSCmdlet.ParameterSetName) {
             "ByDevice" {
-                $Uri = "$($API.BaseUri)/devices/v2/$($Device.id)/threats"
+                $Uri = "$($API.BaseUrl)/devices/v2/$($Device.id)/threats"
             }
             "ByDeviceId" {
-                $Uri = "$($API.BaseUri)/devices/v2/$($DeviceId)/threats"
+                $Uri = "$($API.BaseUrl)/devices/v2/$($DeviceId)/threats"
             }
         }
         
-        Get-CyDataPages -API $API -Uri $Uri    
+        Read-CyData -API $API -Uri $Uri    
     }
 }
 
@@ -75,7 +75,7 @@ function Update-CyDeviceThreat {
 
     Process {
         $hash = $DeviceThreat.sha256
-        if ($hash -eq $null) {
+        if ($null -eq $hash) {
             $hash = $DeviceThreat
         }
 
@@ -88,10 +88,10 @@ function Update-CyDeviceThreat {
         # remain silent
         switch ($PSCmdlet.ParameterSetName) {
             "ByDeviceId" {
-                $output = Invoke-RestMethod -Method POST -Uri "$($API.BaseUri)/devices/v2/$($DeviceId)/threats" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
+                $output = Invoke-RestMethod -Method POST -Uri "$($API.BaseUrl)/devices/v2/$($DeviceId)/threats" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
             }
             "ByDevice" {
-                $output = Invoke-RestMethod -Method POST -Uri "$($API.BaseUri)/devices/v2/$($Device.id)/threats" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
+                $output = Invoke-RestMethod -Method POST -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)/threats" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
             }
         }
         
@@ -100,7 +100,7 @@ function Update-CyDeviceThreat {
 
 <#
 .SYNOPSIS
-    Retrieves the given threat's details from the console. Gets full data, not a shallow version.
+    Retrieves the given threat's Detail from the console. Gets full data, not a shallow version.
 
 .PARAMETER API
     Optional. API Handle (use only when not using session scope).
@@ -108,7 +108,7 @@ function Update-CyDeviceThreat {
 .PARAMETER SHA256
     A collection of SHA256 values (as strings) to retrieve the data for.
 #>
-function Get-CyThreatDetails {
+function Get-CyThreatDetail {
     Param (
         [parameter(Mandatory=$false)]
         [ValidateNotNullOrEmpty()]
@@ -125,7 +125,7 @@ function Get-CyThreatDetails {
             "Accept" = "application/json"
             "Authorization" = "Bearer $($API.AccessToken)"
         }
-        Invoke-RestMethod -Method GET -Uri  "$($API.BaseUri)/threats/v2/$($SHA256)" -Header $headers -UserAgent "" | Convert-CyTypes
+        Invoke-RestMethod -Method GET -Uri  "$($API.BaseUrl)/threats/v2/$($SHA256)" -Header $headers -UserAgent "" | Convert-CyObject
     }
 }
 
@@ -156,7 +156,7 @@ function Get-CyThreatDownloadLink {
             "Accept" = "application/json"
             "Authorization" = "Bearer $($API.AccessToken)"
         }
-        Invoke-RestMethod -Method GET -Uri  "$($API.BaseUri)/threats/v2/download/$($SHA256)" -Header $headers -UserAgent ""
+        Invoke-RestMethod -Method GET -Uri  "$($API.BaseUrl)/threats/v2/download/$($SHA256)" -Header $headers -UserAgent ""
     }
 }
 
@@ -171,7 +171,7 @@ function Get-CyThreatDownloadLink {
 .PARAMETER SHA256
     The threat SHA256 hash
 #>
-function Get-CyThreatDevices {
+function Get-CyThreatDeviceList {
     Param (
         [parameter(Mandatory=$false)]
         [ValidateNotNullOrEmpty()]
@@ -181,6 +181,6 @@ function Get-CyThreatDevices {
         )
 
     Process {
-        Get-CyDataPages -API $API -Uri "$($API.BaseUri)/threats/v2/$($SHA256)/devices"
+        Read-CyData -API $API -Uri "$($API.BaseUrl)/threats/v2/$($SHA256)/devices"
     }
 }
