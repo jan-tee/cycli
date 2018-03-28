@@ -143,7 +143,6 @@ function New-CyConsoleConfig {
                     AutoRetrieve = $true
                     APIId = $APIId
                     APISecret = $DPAPISecret
-                    APISecretIsProtected = $true
                     APITenantId = $APITenantId
                     APIUrl = $APIAuthUrl
                     Token = $Token
@@ -154,6 +153,7 @@ function New-CyConsoleConfig {
             } else {
                 $Consoles += $NewConsole
             }
+            Copy-Item $script:ConsolesJsonPath "$($script:ConsolesJsonPath).bak" -Force
             ConvertTo-Json $Consoles | Out-File -FilePath $script:ConsolesJsonPath -Force
         } catch {
             $_.Exception
