@@ -153,7 +153,9 @@ function New-CyConsoleConfig {
             } else {
                 $Consoles += $NewConsole
             }
-            Copy-Item $script:ConsolesJsonPath "$($script:ConsolesJsonPath).bak" -Force
+            if (Test-Path -Path $script:ConsolesJsonPath -Type Leaf) {
+                Copy-Item $script:ConsolesJsonPath "$($script:ConsolesJsonPath).bak" -Force
+            }
             ConvertTo-Json $Consoles | Out-File -FilePath $script:ConsolesJsonPath -Force
         } catch {
             $_.Exception
