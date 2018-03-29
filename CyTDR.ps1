@@ -67,7 +67,6 @@ function Get-CyTDRs {
 
     Begin {
         $TDRPath = (Get-Item $TDRPath).FullName
-        $wc = New-Object System.Net.WebClient
         $Timestamp = $(Get-Date -UFormat "%Y%m%d-%H%M%S")
 
         switch ($PSCmdlet.ParameterSetName)

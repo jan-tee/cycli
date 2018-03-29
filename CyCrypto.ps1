@@ -83,9 +83,9 @@ function Get-ClaimsFromJwtToken {
     )
 
     $elems = $token.Split(".")
-    $h = ConvertFrom-Base64UrlEncoding($elems[0]) | ConvertFrom-Json
+    $null = ConvertFrom-Base64UrlEncoding($elems[0]) | ConvertFrom-Json
     $o = ConvertFrom-Base64UrlEncoding($elems[1]) | ConvertFrom-Json
-    $s = $elems[2]
+    $null = $elems[2]
 
     $o
 }

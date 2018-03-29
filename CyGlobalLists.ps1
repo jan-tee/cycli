@@ -101,7 +101,7 @@ function Add-CyHashToGlobalList {
 
         $json = $updateMap | ConvertTo-Json
         # remain silent
-        $output = Invoke-RestMethod -Method POST -Uri "$($API.BaseUrl)/globallists/v2" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
+        $null = Invoke-RestMethod -Method POST -Uri "$($API.BaseUrl)/globallists/v2" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
     }
 }
 
@@ -149,6 +149,6 @@ function Remove-CyHashFromGlobalList {
         }
 
         $json = $updateMap | ConvertTo-Json
-        $output = Invoke-RestMethod -Method DELETE -Uri "$($API.BaseUrl)/globallists/v2" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
+        $null = Invoke-RestMethod -Method DELETE -Uri "$($API.BaseUrl)/globallists/v2" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
     }
 }

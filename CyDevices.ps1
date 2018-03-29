@@ -100,7 +100,7 @@ function Remove-CyDevice {
         $json = $updateMap | ConvertTo-Json
         Write-verbose "Update Map: $($json)"
         # remain silent
-        $output = Invoke-RestMethod -Method DELETE -Uri "$($API.BaseUrl)/devices/v2" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
+        $null = Invoke-RestMethod -Method DELETE -Uri "$($API.BaseUrl)/devices/v2" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
     }
 }
 
