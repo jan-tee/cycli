@@ -3,7 +3,14 @@ API &amp; CLI tools for Cylance
 
 ## Prerequisites & Installation
 
-If this is the first time you use PowerShell, here's how to install. If you are a PowerShell Pro, don't bother with this section and skip right to "Getting Started". All the directions assume PowerShell 5.0 or greater. Download the latest Microsoft Management Framework if you are on an earlier version.
+### Option 1: Install from PowerShell Gallery
+
+1. From an administrative PowerShell prompt, enter `Install-Module CyCLI`
+1. To use, `Import-Module CyCLI`
+
+### Option 2: Install from source
+
+If this is the first time you use PowerShell, and you want to install from source, here's how to install. If you are a PowerShell Pro, don't bother with this section and skip right to "Getting Started". All the directions assume PowerShell 5.0 or greater. Download the latest Microsoft Management Framework if you are on an earlier version.
 
 1. Open a PowerShell Administrative Prompt.
 1. In the prompt, set the local execution policy: `Set-ExecutionPolicy RemoteSigned`
