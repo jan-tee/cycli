@@ -162,6 +162,7 @@ function Get-CyDeviceDetailByMac {
             "Accept" = "application/json"
             "Authorization" = "Bearer $($API.AccessToken)"
         }
-        Invoke-RestMethod -Method GET -Uri  "$($API.BaseUrl)/devices/v2/macaddress/$($MAC)" -Header $headers -UserAgent ""
+        # CHECK!
+        Invoke-RestMethod -Method GET -Uri  "$($API.BaseUrl)/devices/v2/macaddress/$($MAC)" -Header $headers -UserAgent "" | Convert-CyObject
     }
 }

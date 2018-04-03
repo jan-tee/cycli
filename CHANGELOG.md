@@ -1,5 +1,9 @@
 # Changelog
 
+## v 0.5.6 (2018.04.03)
+* Bug fix in Get-CyDeviceDetailByMac to include date conversion
+* Bug fix in Convert-CyObject to fix date conversion - seems like a weird property assignment bug in Powershell.
+
 ## v 0.5.4 (2018.03.28)
 * Minor bug fix for creation of backup `consoles.json` file
 

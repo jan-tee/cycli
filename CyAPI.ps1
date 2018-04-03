@@ -241,7 +241,10 @@ function Get-CyDateFromString {
     )
     # convert e.g. 2018-03-07T13:21:07 to Date
     # convert e.g. 2018-03-07T13:21:07.123 to Date (date_offline uses fractional seconds)
-    return [DateTime]::ParseExact($Date, "yyyy-MM-ddTHH:mm:ss.FFF", [Globalization.CultureInfo]::InvariantCulture, [Globalization.DateTimeStyles]::AssumeUniversal)
+    Write-Verbose "Converting date $($Date) to [DateTime]"
+    $dt = [DateTime]::ParseExact($Date, "yyyy-MM-ddTHH:mm:ss.FFF", [Globalization.CultureInfo]::InvariantCulture, [Globalization.DateTimeStyles]::AssumeUniversal)
+    Write-Verbose "Conversion result: $($dt)"
+    return $dt
 }
 
 function Convert-CyObject {
@@ -256,7 +259,12 @@ function Convert-CyObject {
         foreach ($f in $fields) {
             try {
                 if (($null -ne $CyObject.$f) -and ($CyObject.$f -isnot [DateTime])) {
-                    $CyObject.$f = Get-CyDateFromString $CyObject.$f
+                    Write-Verbose "Converting field $($f) (value: $($CyObject.$f)) to date time value"
+                    $newval = Get-CyDateFromString $CyObject.$f
+                    # I think we hit a bug in PowerShell. Previous code was $CyObject.$f = $newval.
+                    # This would break on date conversion with a PropertyAssignmentException when called from Get-CyDeviceDetailByMac, but not when called by Get-CyDeviceDetail
+                    $CyObject | Add-Member $f $newval -Force 
+                    Write-Verbose "Conversion result for field $($f): $($CyObject.$f) $($newval)"
                 }
             } catch [FormatException] {
                 Write-Error "Problem converting field $($f) to date time (value: $($CyObject.$f))"
