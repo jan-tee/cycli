@@ -55,7 +55,8 @@ Class CylanceThreat {
     Optional. API Tenant ID
 
 .PARAMETER APIAuthUrl
-    Optional. URL to obtain token, e.g. "https://protectapi<-region>.cylance.com/auth/v2/token". Defaults to EUC1 region. Use value from the API documentation.
+    Optional. URL to obtain token, e.g. "https://protectapi<-region>.cylance.com/auth/v2/token". Defaults to EUC1 region.
+    Use the value obtained from the API documentation for your console shard.
 
 .PARAMETER Scope
     Optional. If you need to access multiple tenants in parallel, use "None" as scope and collect the API object returned.
@@ -114,11 +115,11 @@ function Get-CyAPI {
                     $reader = New-Object System.IO.StreamReader($result)
                     $reader.BaseStream.Position = 0
                     $reader.DiscardBufferedData()
-                    Write-Error "Could not get valid API token."
+                    Write-Error "Could not obtain valid API token. This may mean that (a) your API credentials are incorrect or (b) your API auth URL is incorrect (use Get-Help Get-CyAPI to get a list of URLs), and your code is attempting to authenticate to the wrong global API instance."
                     if ($Scope -eq "None") {
                         $script:GlobalCyAPIHandle = $null
                     }
-                    $_.Exception
+                    throw $_.Exception
                     return
                 }
 

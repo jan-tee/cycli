@@ -1,5 +1,8 @@
 # Changelog
 
+## v 0.5.8 (2018.04.13)
+* Bug fix in New-CyConsoleConfig and Get-CyAPI to (a) always check if credentials are valid before saving them, and (b) return error messages that point to the most common root cause (wrong shard URL)
+
 ## v 0.5.6 (2018.04.03)
 * Bug fix in Get-CyDeviceDetailByMac to include date conversion
 * Bug fix in Convert-CyObject to fix date conversion - seems like a weird property assignment bug in Powershell.

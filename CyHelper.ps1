@@ -136,7 +136,7 @@ function New-CyConsoleConfig {
         try {
             # was: $APISecret = Read-Host -AsSecureString
             $DPAPISecret = ConvertFrom-SecureString -SecureString $APISecret
-            $null = CyAPIHandle -APIId $id -APISecret $Secret -APITenantId $APITenantId -APIAuthUrl $APIAuthUrl -Scope None
+            $null = Get-CyAPI -APIId $APIId -APISecret $APISecret -APITenantId $APITenantId -APIAuthUrl $APIAuthUrl -Scope None
             # https://social.technet.microsoft.com/wiki/contents/articles/4546.working-with-passwords-secure-strings-and-credentials-in-windows-powershell.aspx
             $NewConsole = @{
                     ConsoleId = $Console
