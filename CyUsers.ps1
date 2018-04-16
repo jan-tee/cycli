@@ -38,3 +38,23 @@ function Get-CyUserDetail {
         Invoke-RestMethod -Method GET -Uri $url -Header $headers -UserAgent "" | Convert-CyObject
     }
 }
+
+function Remove-CyUser {
+    Param (
+        [parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [CylanceAPIHandle]$API = $GlobalCyAPIHandle,
+        [parameter(ParameterSetName="ByUserId", Mandatory=$true)]
+        [object[]]$UserId
+        )
+
+    Process {
+        $headers = @{
+            "Authorization" = "Bearer $($API.AccessToken)"
+        }
+        
+        $url = "$($API.BaseUrl)/users/v2/$($UserId)"
+
+        Invoke-RestMethod -Method DELETE -Uri $url -Header $headers
+    }
+}
