@@ -1,5 +1,8 @@
 # Changelog
 
+## v 0.5.9 (2018.04.18)
+* Bug fix in New-CyConsoleConfig when consoles.json was empty
+
 ## v 0.5.8 (2018.04.13)
 * Bug fix in New-CyConsoleConfig and Get-CyAPI to (a) always check if credentials are valid before saving them, and (b) return error messages that point to the most common root cause (wrong shard URL)
 
