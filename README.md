@@ -8,7 +8,9 @@ API &amp; CLI tools for Cylance
 1. From an administrative PowerShell prompt, enter `Install-Module CyCLI`
 1. To use, `Import-Module CyCLI`
 
-### Option 2: Install from source
+### Option 2: Install from source 
+
+''Only do this if you want to contribute new code, and know what you are doing and why.''
 
 If this is the first time you use PowerShell, and you want to install from source, here's how to install. If you are a PowerShell Pro, don't bother with this section and skip right to "Getting Started". All the directions assume PowerShell 5.0 or greater. Download the latest Microsoft Management Framework if you are on an earlier version.
 
@@ -29,13 +31,14 @@ get-help *-cy*
 
 ## Getting started
 
-The module uses a `consoles.json` file that can reside in your user profile path (`$HOME`) or a special subdirectory (`$HOME\TDRs\`). The module will automatically create the file in your user profile path if none exists when you add your first console entry, or use an existing file in either path (with precedence for `$HOME\TDRs`).
+The module uses a `consoles.json` file that can reside in your user profile path (`$HOME`) or a special subdirectory (`$HOME\TDRs\`). The module will automatically create the file in your user profile path if none exists when you add your first console entry, or use an existing file in either path (with precedence for `$HOME\TDRs`). It will also automatically create the `consoles.json` file for you when you run any ```New-CyConsoleConfig``` commands.
 
 To get started:
 
-1. Create the first console entry in your `consoles.json` (for non-EUC1 shards, add `-TDRUrl` and `-Uri` parameters, e.g. for US, add `-TDRUrl https://protectapi.cylance.com/auth/v2/token` and `-Uri https://protect.cylance.com/Reports/ThreatDataReportV1/`), substituting the argument values for your environment:
+1. Create the first console entry in your `consoles.json` (for non-EUC1 shards, add `-TDRUrl` and `-APIAuthUrl` parameters, e.g. for US, add `-APIAuthUrl https://protectapi.cylance.com/auth/v2/token` and `-TDRUrl https://protect.cylance.com/Reports/ThreatDataReportV1/`), substituting the argument values for your environment:
+
  ```powershell
- New-CyConsoleConfig -Console MyConsole1 -Token "<TDR Token>" -Id "<API ID>" -Secret "<API Secret>" -TenantId "<API Tenant ID>"
+ New-CyConsoleConfig -Console MyConsole1 -Token "<TDR Token>" -APIId "<API ID>" -APISecret "<API Secret>" -APITenantId "<API Tenant ID>" -APIAuthUrl "<API Auth URL for your shard from API docs>" -TDRUrl "<TDR Download URL for your shard>"
  ```
 1. To use the Get-TDRs scripts, first create a base folder if not created earlier in `$HOME\TDRs`
 1. Run `Tools\Get-All-TDRs.ps1` and enjoy the XLSX compiled versions of the TDRs showing up in `$HOME\TDRs`.
