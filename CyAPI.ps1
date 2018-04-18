@@ -8,11 +8,6 @@
 .DESCRIPTION
     Allows retrieval and manipulation of configuration objects in the Cylance console using API v2.
 
-    Use:
-
-    Call "Get-CyAPI -SetGlobalScope" to use the same API for subsequent calls
-    Get-Devices | Get-DeviceDetail
-
 .LINK
     Blog: http://tietze.io/
     Jan Tietze
