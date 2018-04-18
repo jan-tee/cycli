@@ -38,8 +38,11 @@ To get started:
 1. Create the first console entry in your `consoles.json` (for non-EUC1 shards, add `-TDRUrl` and `-APIAuthUrl` parameters, e.g. for US, add `-APIAuthUrl https://protectapi.cylance.com/auth/v2/token` and `-TDRUrl https://protect.cylance.com/Reports/ThreatDataReportV1/`), substituting the argument values for your environment:
 
  ```powershell
- New-CyConsoleConfig -Console MyConsole1 -Token "<TDR Token>" -APIId "<API ID>" -APISecret "<API Secret>" -APITenantId "<API Tenant ID>" -APIAuthUrl "<API Auth URL for your shard from API docs>" -TDRUrl "<TDR Download URL for your shard>"
+ New-CyConsoleConfig -Console MyConsole1 -Token "<TDR Token>" -APIId "<API ID>" -APITenantId "<API Tenant ID>" -APIAuthUrl "<API Auth URL for your shard from API docs>" -TDRUrl "<TDR Download URL for your shard>"
  ```
+
+**Note:** *You will be prompted for the API secret. The API secret cannot be given as a command line argument because it is processed as a secure string (and stored using DPAPI).
+
 1. To use the Get-TDRs scripts, first create a base folder if not created earlier in `$HOME\TDRs`
 1. Run `Tools\Get-All-TDRs.ps1` and enjoy the XLSX compiled versions of the TDRs showing up in `$HOME\TDRs`.
 
