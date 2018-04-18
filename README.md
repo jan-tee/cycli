@@ -10,7 +10,7 @@ API &amp; CLI tools for Cylance
 
 ### Option 2: Install from source 
 
-''Only do this if you want to contribute new code, and know what you are doing and why.''
+**Only do this if you want to contribute new code, and know what you are doing and why.**
 
 If this is the first time you use PowerShell, and you want to install from source, here's how to install. If you are a PowerShell Pro, don't bother with this section and skip right to "Getting Started". All the directions assume PowerShell 5.0 or greater. Download the latest Microsoft Management Framework if you are on an earlier version.
 
@@ -88,7 +88,7 @@ Get-CyAPI -Console <myconsoleID>
 If you did not configure `Consoles.json`, you can provide the secrets directly:
 
 ```powershell
-Get-CyAPI -Id $APIId -Secret $APIsecret -TenantId $TenantId
+Get-CyAPI -APIId $APIId -APISecret $APIsecret -APITenantId $TenantId
 ```
 
 To obtain collections of all devices, zones, and policies:
