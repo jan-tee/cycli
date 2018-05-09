@@ -234,6 +234,7 @@ function Add-CyDeviceToZone {
         }
 
         $json = $updateMap | ConvertTo-Json
+        Write-Verbose "Update device JSON: $($json)"
         # remain silent
         $null = Invoke-RestMethod -Method PUT -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
     }

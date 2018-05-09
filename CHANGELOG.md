@@ -1,5 +1,8 @@
 # Changelog
 
+## v 0.6.0 (2018.05.09)
+* API seems to sometimes return dates as strings like this: "2018-05-09T12:54:27.7711212". Updated date conversion to support these cases.
+
 ## v 0.5.9 (2018.04.18)
 * Bug fix in New-CyConsoleConfig when consoles.json was empty
 

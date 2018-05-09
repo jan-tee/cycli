@@ -238,11 +238,15 @@ function Get-CyDateFromString {
     # convert e.g. 2018-03-07T13:21:07 to Date
     # convert e.g. 2018-03-07T13:21:07.123 to Date (date_offline uses fractional seconds)
     Write-Verbose "Converting date $($Date) to [DateTime]"
-    $dt = [DateTime]::ParseExact($Date, "yyyy-MM-ddTHH:mm:ss.FFF", [Globalization.CultureInfo]::InvariantCulture, [Globalization.DateTimeStyles]::AssumeUniversal)
+    $dt = [DateTime]::ParseExact($Date, "yyyy-MM-ddTHH:mm:ss.FFFFFFF", [Globalization.CultureInfo]::InvariantCulture, [Globalization.DateTimeStyles]::AssumeUniversal)
     Write-Verbose "Conversion result: $($dt)"
     return $dt
 }
 
+<#
+.SYNOPSIS
+    Converts all "date" strings received through the JSON API and turns them into "date" objects.
+#>
 function Convert-CyObject {
     Param (
         [Parameter(Mandatory=$true, Position=1, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)]
