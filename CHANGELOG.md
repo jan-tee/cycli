@@ -1,5 +1,9 @@
 # Changelog
 
+## v 0.6.1 (2018.05.20)
+* Updated New-CyConsoleConfig code to automatically prompt for region - eliminates the most common issue
+* Updated README.md to remove outdated/confusing content
+
 ## v 0.6.0 (2018.05.09)
 * API seems to sometimes return dates as strings like this: "2018-05-09T12:54:27.7711212". Updated date conversion to support these cases.
 
