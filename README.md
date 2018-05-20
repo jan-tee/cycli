@@ -41,16 +41,6 @@ To get started:
 
 *All examples assume you have imported the module using `Import-Module CyCLI` first.*
 
-## Example use of Powershell cmdlets for log files
-
-### Parse-Cylance-Agent-Logs
-
-To parse the PROTECT agent log, create an Excel output file 2017-11-22_performance.xlsx, overwrite the Excel file if it exists, and display the resultant file in Excel:
-
-```powershell
-Parse-Cylance-Agent-Logs.ps1 -LogPath .\2017-11-22.log -Overwrite $True -Show
-```
-
 ## Example use of Powershell cmdlets for the console API
 
 To obtain API authorization valid for 30 minutes if you have configured your `Consoles.json` file:
