@@ -3,6 +3,8 @@ API &amp; CLI tools for Cylance
 
 ## Prerequisites & Installation
 
+All instructions assume PowerShell 5.0 or greater. Download the latest Microsoft Management Framework if you are on an earlier version.
+
 ### Option 1: Install from PowerShell Gallery
 
 1. From an administrative PowerShell prompt, enter `Install-Module CyCLI`
@@ -10,16 +12,10 @@ API &amp; CLI tools for Cylance
 
 ### Option 2: Install from source 
 
-**Only do this if you want to contribute new code, and know what you are doing and why.**
+**Only do this if you want to contribute new code, and know what you are doing and why.** 
 
-If this is the first time you use PowerShell, and you want to install from source, here's how to install. If you are a PowerShell Pro, don't bother with this section and skip right to "Getting Started". All the directions assume PowerShell 5.0 or greater. Download the latest Microsoft Management Framework if you are on an earlier version.
-
-1. Open a PowerShell Administrative Prompt.
-1. In the prompt, set the local execution policy: `Set-ExecutionPolicy RemoteSigned`
-1. In the prompt, install the ImportExcel module: `Install-Module ImportExcel` (*requires NuGet*)
-1. Download + Copy the scripts into a temporary path (or `git clone` the repo)
-1. In the same PowerShell Administrator console, navigate to the directory you just installed the scripts to.
-1. Unblock the module source: `Unblock-File -Path *.ps*`
+1. Clone the repository.
+1. Install the ImportExcel module: `Install-Module ImportExcel`
 1. Install the module: `.\InstallModule`
 1. Import the CyCLI: `Import-Module CyCLI`
 
@@ -31,20 +27,17 @@ get-help *-cy*
 
 ## Getting started
 
-The module uses a `consoles.json` file that can reside in your user profile path (`$HOME`) or a special subdirectory (`$HOME\TDRs\`). The module will automatically create the file in your user profile path if none exists when you add your first console entry, or use an existing file in either path (with precedence for `$HOME\TDRs`). It will also automatically create the `consoles.json` file for you when you run any ```New-CyConsoleConfig``` commands.
+The module uses a `consoles.json` file that can reside in your user profile path (`$HOME`) or a special subdirectory (`$HOME\TDRs\`).
+
+The module will automatically create the file in your user profile path if none exists when you add your first console entry, or use an existing file in either path (with precedence for `$HOME\TDRs`). 
+
+It will also automatically create the `consoles.json` file for you when you run any ```New-CyConsoleConfig``` commands.
 
 To get started:
 
-1. Create the first console entry in your `consoles.json` (for non-EUC1 shards, add `-TDRUrl` and `-APIAuthUrl` parameters, e.g. for US, add `-APIAuthUrl https://protectapi.cylance.com/auth/v2/token` and `-TDRUrl https://protect.cylance.com/Reports/ThreatDataReportV1/`), substituting the argument values for your environment:
+1. Run ```New-CyConsoleConfig``` and answer all prompts.
 
- ```powershell
- New-CyConsoleConfig -Console MyConsole1 -Token "<TDR Token>" -APIId "<API ID>" -APITenantId "<API Tenant ID>" -APIAuthUrl "<API Auth URL for your shard from API docs>" -TDRUrl "<TDR Download URL for your shard>"
- ```
-
-**Note:** *You will be prompted for the API secret. The API secret cannot be given as a literal string command line argument because it is processed as a secure string (and stored using DPAPI).*
-
-1. To use the Get-TDRs scripts, first create a base folder if not created earlier in `$HOME\TDRs`
-1. Run `Tools\Get-All-TDRs.ps1` and enjoy the XLSX compiled versions of the TDRs showing up in `$HOME\TDRs`.
+**Note:** *If you choose to supply parameters rather than answering prompts, please note that the API secret cannot be given as a literal string command line argument because it is processed as a secure string (and stored using DPAPI).*
 
 *All examples assume you have imported the module using `Import-Module CyCLI` first.*
 

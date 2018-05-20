@@ -93,6 +93,15 @@ function Get-CyConsoleConfig {
 .SYNOPSIS
     Adds a console entry to the consoles.json file.
 
+.DESCRIPTION
+    This powershell module stores credentials and settings in a JSON file (consoles.json) for convenient access of
+    parameters such as URLs to use, API secrets, TDR token etc. The use of the JSON file is not mandatory
+    but makes using the API via the powershell module much easier, since consoles can be referred to by name
+    rather than a combination of credentials  (e.g. API application ID, API secret, API Auth URL, and API tenant ID
+    would otherwise be needed everytime the API is used in program code or from a Powershell console).
+
+    You can call New-CyConsoleConfig without any parameters and it will prompt for all details.
+
 .PARAMETER Console
     Mandatory. The console ID you will use to refer to this console entry in your consoles.json file. See the README for CyCLI module.
 
@@ -105,8 +114,8 @@ function Get-CyConsoleConfig {
 .PARAMETER TenantId
     Mandatory. API Tenant ID
 
-.PARAMETER Uri
-    Optional. URI to obtain API token, e.g. "https://protectapi<-region>.cylance.com/auth/v2/token". Defaults to EUC1 region.
+.PARAMETER Region
+    Mandatory. The tenant region. Determines the URLs to use for API and TDR access.
 
 .PARAMETER Token
     Optional. If you would like to use TDR access as well, specify TDR token for console.
@@ -124,11 +133,11 @@ function New-CyConsoleConfig {
         [String]$APITenantId,
         [parameter(Mandatory=$false)]
         [String]$Token,
-        [parameter(Mandatory=$false)]
-        [String]$TDRUrl = "https://protect-euc1.cylance.com/Reports/ThreatDataReportV1/",
-        [parameter(Mandatory=$false)]
-        [String]$APIAuthUrl = "https://protectapi-euc1.cylance.com/auth/v2/token"
+        [parameter(Mandatory=$true)]
+        [ValidateSet ("apne1", "au", "euc1", "sae1", "us-gov", "us")]
+        [String]$Region
         )
+
         $Consoles = Get-CyConsoleConfig
         if ($null -eq $script:ConsolesJsonPath) {
             $script:ConsolesJsonPath = "$($HOME)\consoles.json"
@@ -136,8 +145,25 @@ function New-CyConsoleConfig {
         try {
             # was: $APISecret = Read-Host -AsSecureString
             $DPAPISecret = ConvertFrom-SecureString -SecureString $APISecret
+
+            $TDRUrl = "https://protect.cylance.com/Reports/ThreatDataReportV1/";
+            $APIAuthUrl = "https://protectapi.cylance.com/auth/v2/token";
+
+            switch -Regex ($Region)
+            {
+                "apne1|au|euc1|sae1" {
+                    $TDRUrl = "https://protect-$($Region).cylance.com/Reports/ThreatDataReportV1/";
+                    $APIAuthUrl = "https://protectapi-$($Region).cylance.com/auth/v2/token";
+                }
+                "us-gov" {
+                    $TDRUrl = "https://protect.us.cylance.com/Reports/ThreatDataReportV1/";
+                    $APIAuthUrl = "https://protectapi.us.cylance.com/auth/v2/token";
+                }
+            }
+
             $null = Get-CyAPI -APIId $APIId -APISecret $APISecret -APITenantId $APITenantId -APIAuthUrl $APIAuthUrl -Scope None
             # https://social.technet.microsoft.com/wiki/contents/articles/4546.working-with-passwords-secure-strings-and-credentials-in-windows-powershell.aspx
+
             $NewConsole = @{
                     ConsoleId = $Console
                     AutoRetrieve = $true
