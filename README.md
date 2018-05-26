@@ -59,7 +59,7 @@ To obtain collections of all devices, zones, and policies:
 
 ```powershell
 Get-CyDeviceList
-Get-CyDeviceList | Get-CyDeviceDetails
+Get-CyDeviceList | Get-CyDeviceDetail
 Get-CyZoneList
 ```
 
@@ -67,7 +67,7 @@ To obtain the *detailed information* for one particular device:
 
 ```powershell
 $devices = Get-CyDeviceList
-Get-CyDeviceDetails -Device $devices[0]
+Get-CyDeviceDetail -Device $devices[0]
 ```
 
 To add all devices that have names like `JTIETZE-*` to a new zone `TESTOMAT` with policy `Default`:
