@@ -1,0 +1,9 @@
+import-module cycli
+Get-CyDateFromString "2018-05-09T12:54:27.7711212"
+Get-CyDateFromString "2018-05-09T12:54:27.771121"
+Get-CyDateFromString "2018-05-09T12:54:27.77112"
+Get-CyDateFromString "2018-05-09T12:54:27.7711"
+Get-CyDateFromString "2018-05-09T12:54:27.771"
+Get-CyDateFromString "2018-05-09T12:54:27.77"
+Get-CyDateFromString "2018-05-09T12:54:27.7"
+Get-CyDateFromString "2018-05-09T12:54:27"

@@ -19,6 +19,9 @@
 Class CylanceAPIHandle {
     [string]$AccessToken
     [string]$BaseUrl
+    [string]$Proxy
+    [PSCredential]$ProxyCredential
+    [bool]$ProxyUseDefaultCredentials
 }
 
 <#
@@ -70,6 +73,12 @@ function Get-CyAPI {
         [parameter(Mandatory=$false, ParameterSetName="Direct")]
         [String]$APIAuthUrl = "https://protectapi-euc1.cylance.com/auth/v2/token",
         [parameter(Mandatory=$false)]
+        [String]$Proxy = $null,
+        [parameter(Mandatory=$false)]
+        [PSCredential]$ProxyCredential = $null,
+        [parameter(Mandatory=$false)]
+        [Switch]$ProxyUseDefaultCredentials,
+        [parameter(Mandatory=$false)]
         [ValidateSet ("Session", "None")]
         [String]$Scope = "Session"
         )
@@ -99,13 +108,21 @@ function Get-CyAPI {
 
                 $payload = @{ "auth_token" = $jwtBearerToken } | ConvertTo-Json
 
+                $rest = @{
+                    Method = "POST"
+                    ContentType = "application/json; charset=utf-8"
+                    Uri = $APIAuthUrl
+                    Body = $payload
+                    Proxy = $Proxy
+                    ProxyCredential = $ProxyCredential
+                    ProxyUseDefaultCredentials = $ProxyUseDefaultCredentials
+                }
+
                 try {
-                   $headers = @{
-                        "Accept" = "*/*"
-                        }
-                    $result = Invoke-RestMethod -Method Post -Uri $APIAuthUrl -ContentType "application/json; charset=utf-8" -UserAgent "" -Body $payload -Headers $headers
+                    $result = Invoke-CyRestMethod @rest
                 }
                 catch {
+                    Write-Error $_.Exception
                     $result = $_.Exception.Response.GetResponseStream()
                     $reader = New-Object System.IO.StreamReader($result)
                     $reader.BaseStream.Position = 0
@@ -123,6 +140,13 @@ function Get-CyAPI {
                 [CylanceAPIHandle]$r = New-Object CylanceAPIHandle
                 $r.AccessToken = $result.access_token
                 $r.BaseUrl = $baseUrl
+                if ($Proxy -ne $null) {
+                    $r.Proxy = $Proxy
+                    if ($ProxyCredential -ne $null) {
+                        $r.ProxyCredential = $ProxyCredential
+                    }
+                    $r.ProxyUseDefaultCredentials = ($ProxyUseDefaultCredentials -eq $true)
+                }
 
                 if ($Scope -eq "Session") {
                     $script:GlobalCyAPIHandle = $r
@@ -141,14 +165,17 @@ function Get-CyAPI {
                 if ($null -ne $ConsoleDetails.APIUrl) { 
                     $APIAuthUrl = $ConsoleDetails.APIUrl
                 }
-                $args = @{
+                $rest = @{
                     APIId = $ConsoleDetails.APIId
                     APISecret = $SecureStringPw
                     APITenantId = $ConsoleDetails.APITenantId
-                    Scope = $Scope
                     APIAuthUrl = $APIAuthUrl
+                    Scope = $Scope
+                    Proxy = $Proxy
+                    ProxyCredential = $ProxyCredential
+                    ProxyUseDefaultCredentials = $ProxyUseDefaultCredentials
                 }
-                Get-CyAPI @args
+                Get-CyAPI @rest
             }
         }
     }
@@ -178,11 +205,9 @@ function Read-CyData {
         [Hashtable]$QueryParams = @{}
         )
 
-    $auth = "Bearer " + $API.AccessToken
-
     $headers = @{
         "Accept" = "application/json"
-        "Authorization" = $auth
+        "Authorization" = "Bearer $($API.AccessToken)"
     }
 
     $page = 1
@@ -198,11 +223,15 @@ function Read-CyData {
         foreach ($key in $params.Keys) {
             Write-Verbose "Read-CyData: GET ${Uri} | $($key) = $($params.$key)"
         }
-        $resp = Invoke-RestMethod `
-            -Method GET `
-            -Uri $Uri `
-            -Header $headers `
-            -UserAgent "" -Body $params `
+
+        $rest = @{
+            Method = "GET"
+            Uri = $Uri
+            Headers = $headers
+            Body = $params
+        }
+
+        $resp = Invoke-CyRestMethod @rest
 
         $resp.page_items | foreach-object {
             $_ | Convert-CyObject
@@ -273,4 +302,72 @@ function Convert-CyObject {
 
         $CyObject
     }
+}
+
+<#
+.SYNOPSIS
+    Invokes a REST method using the proxy configuration stored in the API object.
+#>
+function Invoke-CyRestMethod {
+    Param(
+        [parameter(Mandatory=$false)]
+        [CylanceAPIHandle]$API = $null,
+        [parameter(Mandatory=$true)]
+        [string]$Uri,
+        [parameter(Mandatory=$true)]
+        [string]$Method,
+        [parameter(Mandatory=$false)]
+        [object]$Body = $null,
+        [parameter(Mandatory=$false)]
+        [Hashtable]$Headers = @{ "Accept" = "*/*" },
+        [parameter(Mandatory=$false)]
+        [string]$ContentType = $null,
+        [parameter(Mandatory=$false)]
+        [String]$Proxy = $null,
+        [parameter(Mandatory=$false)]
+        [PSCredential]$ProxyCredential = $null,
+        [parameter(Mandatory=$false)]
+        [Switch]$ProxyUseDefaultCredentials
+        )
+
+        $rest = @{
+            Method = $Method
+            Uri = $Uri
+            Headers = $Headers
+            UserAgent = "PowerShell/CyCLI"
+        }
+
+        if ($Body -ne $null) {
+            $rest.Body = $Body
+        }
+        
+        if (![String]::IsNullOrEmpty($ContentType)) {
+            $rest.ContentType = $ContentType
+        }
+
+        if ($API -ne $null) {
+            if ((![String]::IsNullOrEmpty($API.Proxy)) -and (![String]::IsNullOrEmpty($Proxy))) {
+                $Proxy = $API.Proxy
+                if ($API.ProxyCredential -ne $null) {
+                    $ProxyCredential = $API.ProxyCredential
+                }
+                if ($API.ProxyUseDefaultCredentials -eq $true) {
+                    $ProxyUseDefaultCredentials = $API.ProxyUseDefaultCredentials
+                }
+            }
+        }
+
+        if (![String]::IsNullOrEmpty($Proxy)) {
+            $rest.Proxy = $Proxy
+            if ($ProxyCredential -ne $null) {
+                $rest.ProxyCredential = $ProxyCredential
+            }
+            if ($ProxyUseDefaultCredentials -eq $true) {
+                $rest.ProxyUseDefaultCredentials = $ProxyUseDefaultCredentials
+            }
+        }
+
+        $ht = $rest | Out-String
+        Write-Verbose "Invoking REST method using params: $($ht)"
+        Invoke-RestMethod @rest
 }

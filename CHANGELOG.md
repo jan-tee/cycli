@@ -1,5 +1,9 @@
 # Changelog
 
+## v 0.6.2 (2018.05.29)
+* Encapsulated the REST method call function to allow for proxy support
+* Updated Get-CyAPI to support proxies with/without credential access
+
 ## v 0.6.1 (2018.05.20)
 * Updated New-CyConsoleConfig code to automatically prompt for region - eliminates the most common issue
 * Updated README.md to remove outdated/confusing content

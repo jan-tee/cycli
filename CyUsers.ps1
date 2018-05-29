@@ -35,6 +35,6 @@ function Get-CyUserDetail {
         }
 
         # Read-CyData -API $API -Uri $url
-        Invoke-RestMethod -Method GET -Uri $url -Header $headers -UserAgent "" | Convert-CyObject
+        Invoke-CyRestMethod -Method GET -Uri $url -Headers $headers | Convert-CyObject
     }
 }

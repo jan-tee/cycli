@@ -100,7 +100,7 @@ function Remove-CyDevice {
         $json = $updateMap | ConvertTo-Json
         Write-verbose "Update Map: $($json)"
         # remain silent
-        $null = Invoke-RestMethod -Method DELETE -Uri "$($API.BaseUrl)/devices/v2" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
+        $null = Invoke-CyRestMethod -Method DELETE -Uri "$($API.BaseUrl)/devices/v2" -ContentType "application/json; charset=utf-8" -Headers $headers -Body $json
     }
 }
 
@@ -131,7 +131,7 @@ function Get-CyDeviceDetail {
             "Accept" = "application/json"
             "Authorization" = "Bearer $($API.AccessToken)"
         }
-        Invoke-RestMethod -Method GET -Uri  "$($API.BaseUrl)/devices/v2/$($Device.id)" -Header $headers -UserAgent "" | Convert-CyObject
+        Invoke-CyRestMethod -Method GET -Uri  "$($API.BaseUrl)/devices/v2/$($Device.id)" -Headers $headers | Convert-CyObject
     }
 }
 
@@ -162,7 +162,7 @@ function Get-CyDeviceDetailByMac {
             "Accept" = "application/json"
             "Authorization" = "Bearer $($API.AccessToken)"
         }
-        # CHECK!
-        Invoke-RestMethod -Method GET -Uri  "$($API.BaseUrl)/devices/v2/macaddress/$($MAC)" -Header $headers -UserAgent "" | Convert-CyObject
+
+        Invoke-CyRestMethod -Method GET -Uri  "$($API.BaseUrl)/devices/v2/macaddress/$($MAC)" -Headers $headers | Convert-CyObject
     }
 }

@@ -88,10 +88,10 @@ function Update-CyDeviceThreat {
         # remain silent
         switch ($PSCmdlet.ParameterSetName) {
             "ByDeviceId" {
-                $output = Invoke-RestMethod -Method POST -Uri "$($API.BaseUrl)/devices/v2/$($DeviceId)/threats" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
+                $output = Invoke-CyRestMethod -Method POST -Uri "$($API.BaseUrl)/devices/v2/$($DeviceId)/threats" -ContentType "application/json; charset=utf-8" -Headers $headers -Body $json
             }
             "ByDevice" {
-                $output = Invoke-RestMethod -Method POST -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)/threats" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
+                $output = Invoke-CyRestMethod -Method POST -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)/threats" -ContentType "application/json; charset=utf-8" -Headers $headers -Body $json
             }
         }
         
@@ -125,7 +125,7 @@ function Get-CyThreatDetail {
             "Accept" = "application/json"
             "Authorization" = "Bearer $($API.AccessToken)"
         }
-        Invoke-RestMethod -Method GET -Uri  "$($API.BaseUrl)/threats/v2/$($SHA256)" -Header $headers -UserAgent "" | Convert-CyObject
+        Invoke-CyRestMethod -Method GET -Uri  "$($API.BaseUrl)/threats/v2/$($SHA256)" -Headers $headers | Convert-CyObject
     }
 }
 
@@ -156,7 +156,7 @@ function Get-CyThreatDownloadLink {
             "Accept" = "application/json"
             "Authorization" = "Bearer $($API.AccessToken)"
         }
-        Invoke-RestMethod -Method GET -Uri  "$($API.BaseUrl)/threats/v2/download/$($SHA256)" -Header $headers -UserAgent ""
+        Invoke-CyRestMethod -Method GET -Uri  "$($API.BaseUrl)/threats/v2/download/$($SHA256)" -Headers $headers
     }
 }
 

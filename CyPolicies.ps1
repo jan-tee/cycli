@@ -60,7 +60,7 @@ function Set-CyPolicyForDevice {
 
         $json = $updateMap | ConvertTo-Json
         # remain silent
-        $null = Invoke-RestMethod -Method PUT -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
+        $null = Invoke-CyRestMethod -Method PUT -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)" -ContentType "application/json; charset=utf-8" -Headers $headers -Body $json
     }
 }
 
@@ -91,6 +91,6 @@ function Get-CyPolicy {
             "Accept" = "application/json"
             "Authorization" = "Bearer $($API.AccessToken)"
         }
-        Invoke-RestMethod -Method GET -Uri  "$($API.BaseUrl)/policies/v2/$($Policy.id)" -Header $headers -UserAgent "" | Convert-CyObject
+        Invoke-CyRestMethod -Method GET -Uri  "$($API.BaseUrl)/policies/v2/$($Policy.id)" -Headers $headers | Convert-CyObject
     }
 }

@@ -84,7 +84,7 @@ function Get-CyZone {
                     "Accept" = "application/json"
                     "Authorization" = "Bearer $($API.AccessToken)"
                 }
-                Invoke-RestMethod -Method GET -Uri  "$($API.BaseUrl)/zones/v2/$($Zone.id)" -Header $headers -UserAgent ""
+                Invoke-CyRestMethod -Method GET -Uri  "$($API.BaseUrl)/zones/v2/$($Zone.id)" -Headers $headers
             }
         }
     }
@@ -135,7 +135,7 @@ function New-CyZone{
         }
 
         $json = $updateMap | ConvertTo-Json
-        Invoke-RestMethod -Method POST -Uri "$($API.BaseUrl)/zones/v2" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
+        Invoke-CyRestMethod -Method POST -Uri "$($API.BaseUrl)/zones/v2" -ContentType "application/json; charset=utf-8" -Headers $headers -Body $json
     }
 }
 
@@ -179,7 +179,7 @@ function Remove-CyZone {
                 Remove-CyZone -API $API -Zone $Zone
             }
             "ByZone" {
-                Invoke-RestMethod -Method DELETE -Uri "$($API.BaseUrl)/zones/v2/$($Zone.id)" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent ""
+                Invoke-CyRestMethod -Method DELETE -Uri "$($API.BaseUrl)/zones/v2/$($Zone.id)" -ContentType "application/json; charset=utf-8" -Headers $headers
             }
         }
     }
@@ -236,7 +236,7 @@ function Add-CyDeviceToZone {
         $json = $updateMap | ConvertTo-Json
         Write-Verbose "Update device JSON: $($json)"
         # remain silent
-        $null = Invoke-RestMethod -Method PUT -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
+        $null = Invoke-CyRestMethod -Method PUT -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)" -ContentType "application/json; charset=utf-8" -Headers $headers -Body $json
     }
 }
 <#
@@ -289,6 +289,6 @@ function Remove-CyDeviceFromZone {
 
         $json = $updateMap | ConvertTo-Json
         # remain silent
-        $null = Invoke-RestMethod -Method PUT -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)" -ContentType "application/json; charset=utf-8" -Header $headers -UserAgent "" -Body $json
+        $null = Invoke-CyRestMethod -Method PUT -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)" -ContentType "application/json; charset=utf-8" -Headers $headers -Body $json
     }
 }
