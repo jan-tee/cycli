@@ -93,7 +93,8 @@ function Get-CyTDRs {
 
             # retrieve CSV
             $Url = "${TDRUrl}${TDRType}/${AccessToken}"
-            Invoke-WebRequest -Uri $Url -OutFile $Filename | Out-Null
+            # was: Invoke-WebRequest -Uri $Url -OutFile $Filename | Out-Null
+            $null = Invoke-CyRestMethod -Method GET -Uri $Url -OutFile $Filename
         }
 
         # create XLSX summary - invoke with last retrieved component name

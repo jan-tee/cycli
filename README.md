@@ -12,7 +12,7 @@ All instructions assume PowerShell 5.0 or greater. Download the latest Microsoft
 
 ### Option 2: Install from source 
 
-**Only do this if you want to contribute new code, and know what you are doing and why.** 
+**Only do this if you want to contribute new code, and know what you are doing and why.** In fact, *please* never do this if you don't know exactly why.
 
 1. Clone the repository.
 1. Install the ImportExcel module: `Install-Module ImportExcel`
@@ -27,15 +27,19 @@ get-help *-cy*
 
 ## Getting started
 
-The module uses a `consoles.json` file that can reside in your user profile path (`$HOME`) or a special subdirectory (`$HOME\TDRs\`).
+### API credentials: Persistent Storage
 
-The module will automatically create the file in your user profile path if none exists when you add your first console entry, or use an existing file in either path (with precedence for `$HOME\TDRs`). 
+The module uses a `consoles.json` file that can reside in your user profile path (`$HOME`) or a special subdirectory (`$HOME\TDRs\`). The module will *automatically* create the file in your user profile path if none exists when you add your first console entry, or use an existing file in either path (with precedence for `$HOME\TDRs`). 
 
 It will also automatically create the `consoles.json` file for you when you run any ```New-CyConsoleConfig``` commands.
 
-To get started:
+### Proxy support
 
-1. Run ```New-CyConsoleConfig``` and answer all prompts.
+If you need to use a proxy, run ```Set-CyGlobalSettings``` as the first cmdlet in any API session to configure proxy settings.
+
+### Create your first API connection
+
+To get started, run ```New-CyConsoleConfig``` and answer all prompts.
 
 **Note:** *If you choose to supply parameters rather than answering prompts, please note that the API secret cannot be given as a literal string command line argument because it is processed as a secure string (and stored using DPAPI).*
 
@@ -86,5 +90,4 @@ $threatDetails = $threats.sha256 | Get-CyThreatDetails
 ```
 
 # TODO
- - Web proxy detection & support
  - Automatic substitution of illegal characters in e.g. zone names to prevent API errors

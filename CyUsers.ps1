@@ -1,4 +1,8 @@
-﻿function Get-CyUserList {
+﻿<#
+.SYNOPSIS
+    Gets a list of users in the console
+#>
+function Get-CyUserList {
     [CmdletBinding(DefaultParameterSetName="All")] 
     Param (
         [parameter(Mandatory=$false)]
@@ -8,6 +12,16 @@
     Read-CyData -API $API -Uri "$($API.BaseUrl)/users/v2"
 }
 
+<#
+.SYNOPSIS
+    Retrieves the details of a user object.
+
+.PARAMETER User
+    A user object (retrieved e.g. via Get-CyUserList)
+
+.PARAMETER UserId
+    A user ID or email to retrieve the user detail for
+#>
 function Get-CyUserDetail {
     Param (
         [parameter(Mandatory=$false)]
