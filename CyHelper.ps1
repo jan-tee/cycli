@@ -235,7 +235,9 @@ function Get-CyConsoleArgumentAutoCompleter {
         [parameter(Mandatory=$True)]
         [String]$ParameterName,
         [parameter(Mandatory=$False)]
-        [String]$ParameterSetName
+        [String]$ParameterSetName,
+        [Parameter(Mandatory=$False)]
+        [Int]$Position
     )
 
     $consoleIds = (Get-CyConsoleConfig).ConsoleId
@@ -247,6 +249,9 @@ function Get-CyConsoleArgumentAutoCompleter {
     $consolesAttributes = new-object -Type System.Collections.ObjectModel.Collection[System.Attribute]
     $consolesParam = new-object System.Management.Automation.ParameterAttribute
     $consolesParam.Mandatory = $Mandatory
+    if ($Position -ne $null) {
+        $consolesParam.Position = $Position
+    }
     $consolesParam.HelpMessage = "Enter one or more console IDs, separated by commas"
     if ([String]::Empty -ne $ParameterSetName) { $consolesParam.ParameterSetName = $ParameterSetName }
     $consolesAttributes.Add($consolesParam)    

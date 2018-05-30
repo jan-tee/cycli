@@ -81,7 +81,7 @@ function Get-CyAPI {
         [String]$Scope = "Session"
         )
     DynamicParam {
-        Get-CyConsoleArgumentAutoCompleter -Mandatory -ParameterName "Console" -ParameterSetName "ByReference"
+        Get-CyConsoleArgumentAutoCompleter -Mandatory -ParameterName "Console" -ParameterSetName "ByReference" -Position 0
     }
 
     Begin {

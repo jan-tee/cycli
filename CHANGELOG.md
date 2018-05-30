@@ -1,5 +1,8 @@
 # Changelog
 
+## v 0.6.3 (2018.05.30)
+* Get-CyAPI supports positional parameter for console selection, allowing for short-hand form "Get-CyAPI <Console>"
+
 ## v 0.6.2 (2018.05.29)
 * Encapsulated the REST method call function to allow for proxy support
 * Updated Get-CyAPI to support proxies with/without credential access
