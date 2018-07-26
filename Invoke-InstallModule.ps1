@@ -30,7 +30,8 @@ Begin {
             'CyPolicies.ps1',
             'CyInstallers.ps1',
             'CyGlobalLists.ps1',
-            'CyUsers.ps1'
+            'CyUsers.ps1',
+            'CyOptics.ps1'
         )
     }
     Catch {

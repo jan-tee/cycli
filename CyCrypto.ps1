@@ -20,7 +20,7 @@ function Get-HMACSHA256 {
 
     Can accept additional claims to include in request.
 #>
-function Get-JWTToken {
+function Get-CyJWTToken {
     Param (
         [parameter(Mandatory=$True)]
         [Hashtable]$claims = @{},
@@ -76,7 +76,7 @@ function Get-JWTToken {
     "${h}.${p}.${s}"
 }
 
-function Get-ClaimsFromJwtToken {
+function Get-CyClaimsFromJwtToken {
     Param (
         [parameter(Mandatory=$true)]
         [String]$token

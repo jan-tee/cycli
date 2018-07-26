@@ -19,6 +19,10 @@
 Class CylanceAPIHandle {
     [string]$AccessToken
     [string]$BaseUrl
+    [securestring]$APISecret
+    [string]$APIId
+    [string]$APITenantId
+    [datetime]$ExpirationTime
 }
 
 Class CylanceGlobalSettings {
@@ -85,6 +89,7 @@ function Get-CyAPI {
     }
 
     Begin {
+        $expirationTimeout = 1800
         switch ($PSCmdlet.ParameterSetName)
         {
             "Direct"
@@ -96,9 +101,9 @@ function Get-CyAPI {
 
                 $claims = @{}
 
-                $jwtBearerToken = Get-JWTToken `
+                $jwtBearerToken = Get-CyJWTToken `
                     -claims $claims `
-                    -expirationSeconds 1800 `
+                    -expirationSeconds $expirationTimeout `
                     -secret $pw `
                     -iss "http://cylance.com" `
                     -tid $APITenantId `
@@ -114,7 +119,8 @@ function Get-CyAPI {
                 }
 
                 try {
-                    $result = Invoke-CyRestMethod @rest
+                    Write-Verbose "Requesting auth for JWT token: $($jwtBearerToken)"
+                    $result = Invoke-CyRestMethod @rest -DoNotRenewToken
                 }
                 catch {
                     Write-Error $_.Exception
@@ -135,6 +141,10 @@ function Get-CyAPI {
                 [CylanceAPIHandle]$r = New-Object CylanceAPIHandle
                 $r.AccessToken = $result.access_token
                 $r.BaseUrl = $baseUrl
+                $r.APISecret = $APISecret
+                $r.APIId = $APIId
+                $r.APITenantId = $APITenantId
+                $r.ExpirationTime = (Get-Date).AddSeconds($expirationTimeout - 1740)
 
                 if ($Scope -eq "Session") {
                     $script:GlobalCyAPIHandle = $r
@@ -377,8 +387,26 @@ function Invoke-CyRestMethod {
         [parameter(Mandatory=$false)]
         [string]$OutFile = $null,
         [parameter(Mandatory=$false)]
-        [Switch]$ProxyUseDefaultCredentials
+        [Switch]$ProxyUseDefaultCredentials,
+        [Switch]$DoNotRenewToken
         )
+
+        if (((Get-Date) -gt $API.ExpirationTime) -and -not $DoNotRenewToken) {
+            # renew token automatically
+            Write-Verbose "Renewing token: $($DoNotRenewToken); previous token: $($API | out-string)"
+
+            $APIrenewed = Get-CyAPI `
+                -Scope None `
+                -APIId $API.APIId `
+                -APITenantId $API.APITenantId `
+                -APISecret $API.APISecret `
+                -APIAuthUrl $API.BaseUrl
+
+            Write-Verbose "Renewing token $($APIrenewed | out-string)"
+
+            $API.ExpirationTime = $APIrenewed.ExpirationTime
+            $API.AccessToken = $APIrenewed.AccessToken
+        }
 
         $rest = @{
             Method = $Method
@@ -423,9 +451,7 @@ function Invoke-CyRestMethod {
             }
         }
 
-        if ($Verbose) {
-            $ht = $rest | Out-String
-            Write-Verbose "Invoking CyREST method using params: $($ht)"
-        }
+        Write-Verbose "Invoking CyREST method using params: $($rest | Out-String)"
+
         Invoke-RestMethod @rest
 }

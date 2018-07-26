@@ -1,7 +1,16 @@
 # Changelog
 
+## v 0.6.5
+* Updated function names
+* Prepared auto-renewal for tokens
+
+## v 0.6.4 (2018.07.17)
+* Added support for first OPTICS APIs
+
 ## v 0.6.3 (2018.05.30)
 * Get-CyAPI supports positional parameter for console selection, allowing for short-hand form "Get-CyAPI <Console>"
+* Exposed some JWT primitives
+* Added more -verbose support to Get-CyAPI
 
 ## v 0.6.2 (2018.05.29)
 * Encapsulated the REST method call function to allow for proxy support
