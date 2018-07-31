@@ -23,6 +23,7 @@ Class CylanceAPIHandle {
     [string]$APIId
     [string]$APITenantId
     [datetime]$ExpirationTime
+    [string]$Scope
 }
 
 Class CylanceGlobalSettings {
@@ -111,10 +112,12 @@ function Get-CyAPI {
 
                 $payload = @{ "auth_token" = $jwtBearerToken } | ConvertTo-Json
 
+                $baseUrl = ([System.Uri]$APIAuthUrl).Scheme + "://" + ([System.Uri]$APIAuthUrl).Host
+
                 $rest = @{
                     Method = "POST"
                     ContentType = "application/json; charset=utf-8"
-                    Uri = $APIAuthUrl
+                    Uri = "$($baseUrl)/auth/v2/token"
                     Body = $payload
                 }
 
@@ -129,14 +132,12 @@ function Get-CyAPI {
                     $reader.BaseStream.Position = 0
                     $reader.DiscardBufferedData()
                     Write-Error "Could not obtain valid API token. This may mean that (a) your API credentials are incorrect or (b) your API auth URL is incorrect (use Get-Help Get-CyAPI to get a list of URLs), and your code is attempting to authenticate to the wrong global API instance."
-                    if ($Scope -eq "None") {
+                    if ($Scope -eq "Session") {
                         $script:GlobalCyAPIHandle = $null
                     }
                     throw $_.Exception
                     return
                 }
-
-                $baseUrl = ([System.Uri]$APIAuthUrl).Scheme + "://" + ([System.Uri]$APIAuthUrl).Host
 
                 [CylanceAPIHandle]$r = New-Object CylanceAPIHandle
                 $r.AccessToken = $result.access_token
@@ -144,7 +145,8 @@ function Get-CyAPI {
                 $r.APISecret = $APISecret
                 $r.APIId = $APIId
                 $r.APITenantId = $APITenantId
-                $r.ExpirationTime = (Get-Date).AddSeconds($expirationTimeout - 1740)
+                $r.ExpirationTime = (Get-Date).AddSeconds(180) # force token renewal after 3 minutes at all times.
+                $r.Scope = $Scope
 
                 if ($Scope -eq "Session") {
                     $script:GlobalCyAPIHandle = $r
@@ -263,11 +265,6 @@ function Read-CyData {
         [Hashtable]$QueryParams = @{}
         )
 
-    $headers = @{
-        "Accept" = "application/json"
-        "Authorization" = "Bearer $($API.AccessToken)"
-    }
-
     $page = 1
     do {
         $params = @{
@@ -283,9 +280,9 @@ function Read-CyData {
         }
 
         $rest = @{
+            API = $API
             Method = "GET"
             Uri = $Uri
-            Headers = $headers
             Body = $params
         }
 
@@ -297,18 +294,24 @@ function Read-CyData {
         Write-Verbose "Response was page $($resp.page_number) of $($resp.total_pages) pages"
 
         $page++
-
     } while ($resp.page_number -lt $resp.total_pages)
 }
 
 <#
 .SYNOPSIS
-    Returns the currently active global CyAPIHandle, if one is set
+    Returns the currently active global (session) CyAPIHandle, if one is set
 #>
 Function Get-CyAPIHandle {
     $GlobalCyAPIHandle
 }
 
+<#
+.SYNOPSIS
+    Clears the currently active global (session) CyAPIHandle, if one is set
+#>
+Function Clear-CyAPIHandle {
+    $script:GlobalCyAPIHandle = $null
+}
 
 <#
 .SYNOPSIS
@@ -365,6 +368,18 @@ function Convert-CyObject {
 <#
 .SYNOPSIS
     Invokes a REST method using the proxy configuration stored in the API object.
+
+.PARAMETER API
+    API Handle.
+
+.PARAMETER Uri
+    The URI for the REST method
+
+.PARAMETER Body
+    The request body
+
+.PARAMETER Headers
+    Any headers to transmit. 'Accept = "application/json"' is added if no headers are specified.
 #>
 function Invoke-CyRestMethod {
     Param(
@@ -377,7 +392,7 @@ function Invoke-CyRestMethod {
         [parameter(Mandatory=$false)]
         [object]$Body = $null,
         [parameter(Mandatory=$false)]
-        [Hashtable]$Headers = @{ "Accept" = "*/*" },
+        [Hashtable]$Headers = @{},
         [parameter(Mandatory=$false)]
         [string]$ContentType = $null,
         [parameter(Mandatory=$false)]
@@ -391,9 +406,11 @@ function Invoke-CyRestMethod {
         [Switch]$DoNotRenewToken
         )
 
-        if (((Get-Date) -gt $API.ExpirationTime) -and -not $DoNotRenewToken) {
+        Write-Verbose "Entry into Invoke-CyRestMethod: DoNotRenewToken=$($DoNotRenewToken)"
+
+        if ((!$DoNotRenewToken) -and ($API -ne $null) -and ((Get-Date) -gt $API.ExpirationTime)) {
             # renew token automatically
-            Write-Verbose "Renewing token: $($DoNotRenewToken); previous token: $($API | out-string)"
+            Write-Verbose "Renewing token: $($API | out-string)"
 
             $APIrenewed = Get-CyAPI `
                 -Scope None `
@@ -402,10 +419,27 @@ function Invoke-CyRestMethod {
                 -APISecret $API.APISecret `
                 -APIAuthUrl $API.BaseUrl
 
-            Write-Verbose "Renewing token $($APIrenewed | out-string)"
+            Write-Verbose "New token: $($APIrenewed | out-string)"
 
+            # replace relevant token content in API handle object
             $API.ExpirationTime = $APIrenewed.ExpirationTime
             $API.AccessToken = $APIrenewed.AccessToken
+
+            $API = $APIrenewed
+        }
+
+        if (!$Headers.ContainsKey("Accept"))
+        {
+            $Headers.Accept = "application/json";
+        }
+        
+        if (!$Headers.ContainsKey("Authorization"))
+        {
+            if ($API -ne $null) 
+            {
+                Write-Verbose "Checkpoint 3"
+                $Headers.Authorization = "Bearer $($API.AccessToken)"
+            }
         }
 
         $rest = @{
@@ -426,7 +460,7 @@ function Invoke-CyRestMethod {
         if (![String]::IsNullOrEmpty($ContentType)) {
             $rest.ContentType = $ContentType
         }
-
+        
         $settings = Get-CyGlobalSettings
 
         if (![String]::IsNullOrEmpty($settings.Proxy) -and [String]::IsNullOrEmpty($Proxy)) {

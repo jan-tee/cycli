@@ -42,11 +42,6 @@ function Set-CyPolicyForDevice {
     )
 
     Begin {
-        $headers = @{
-            "Accept" = "application/json"
-            "Authorization" = "Bearer $($API.AccessToken)"
-        }
-
         if ($null -eq $Policy.id) {
             throw "Policy object does not contain 'id' property."
         }
@@ -60,7 +55,7 @@ function Set-CyPolicyForDevice {
 
         $json = $updateMap | ConvertTo-Json
         # remain silent
-        $null = Invoke-CyRestMethod -Method PUT -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)" -ContentType "application/json; charset=utf-8" -Headers $headers -Body $json
+        $null = Invoke-CyRestMethod -API $API -Method PUT -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)" -ContentType "application/json; charset=utf-8" -Body $json
     }
 }
 
@@ -87,10 +82,48 @@ function Get-CyPolicy {
         )
 
     Process {
-        $headers = @{
-            "Accept" = "application/json"
-            "Authorization" = "Bearer $($API.AccessToken)"
+        Invoke-CyRestMethod -API $API -Method GET -Uri  "$($API.BaseUrl)/policies/v2/$($Policy.id)" | Convert-CyObject
+    }
+}
+
+<#
+.SYNOPSIS
+    Creates a new policy.
+
+.PARAMETER API
+    Optional. API Handle (use only when not using session scope).
+
+.PARAMETER Name
+    The name of the new policy
+
+.PARAMETER Policy
+    The policy object.
+
+#>
+function New-CyPolicy {
+    Param (
+        [parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [CylanceAPIHandle]$API = $GlobalCyAPIHandle,
+        [Parameter(Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
+        [String[]]$Name,
+        [Parameter(Mandatory=$true)]
+        [object]$Policy = $null
+    )
+    Begin {
+    }
+
+    Process {
+        $Policy.id = $null
+        $Policy.utc_timestamp = $null
+        $Policy.checksum = $null
+
+        $updateMap = @{
+            "policy" = $($Policy)
+            "user_id" =$($API.APIId)
         }
-        Invoke-CyRestMethod -Method GET -Uri  "$($API.BaseUrl)/policies/v2/$($Policy.id)" -Headers $headers | Convert-CyObject
+
+        $json = $updateMap | ConvertTo-Json
+        Invoke-CyRestMethod -API $API -Method POST -Uri "$($API.BaseUrl)/policies/v2" -ContentType "application/json; charset=utf-8" -Body $json
     }
 }

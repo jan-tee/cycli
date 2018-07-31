@@ -80,11 +80,7 @@ function Get-CyZone {
             }
             "ByZoneObject" {
                 Write-Verbose "Get-CyZone: Getting zone via zone object for zone ID '$($Zone.id)'"
-                $headers = @{
-                    "Accept" = "application/json"
-                    "Authorization" = "Bearer $($API.AccessToken)"
-                }
-                Invoke-CyRestMethod -Method GET -Uri  "$($API.BaseUrl)/zones/v2/$($Zone.id)" -Headers $headers
+                Invoke-CyRestMethod -API $API -Method GET -Uri  "$($API.BaseUrl)/zones/v2/$($Zone.id)"
             }
         }
     }
@@ -121,10 +117,6 @@ function New-CyZone{
 
     )
     Begin {
-        $headers = @{
-            "Accept" = "application/json"
-            "Authorization" = "Bearer $($API.AccessToken)"
-        }
     }
 
     Process {
@@ -135,7 +127,7 @@ function New-CyZone{
         }
 
         $json = $updateMap | ConvertTo-Json
-        Invoke-CyRestMethod -Method POST -Uri "$($API.BaseUrl)/zones/v2" -ContentType "application/json; charset=utf-8" -Headers $headers -Body $json
+        Invoke-CyRestMethod -API $API -Method POST -Uri "$($API.BaseUrl)/zones/v2" -ContentType "application/json; charset=utf-8" -Body $json
     }
 }
 
@@ -166,10 +158,6 @@ function Remove-CyZone {
     )
 
     Begin {
-        $headers = @{
-            "Accept" = "application/json"
-            "Authorization" = "Bearer $($API.AccessToken)"
-        }
     }
 
     Process {
@@ -179,7 +167,7 @@ function Remove-CyZone {
                 Remove-CyZone -API $API -Zone $Zone
             }
             "ByZone" {
-                Invoke-CyRestMethod -Method DELETE -Uri "$($API.BaseUrl)/zones/v2/$($Zone.id)" -ContentType "application/json; charset=utf-8" -Headers $headers
+                Invoke-CyRestMethod -API $API -Method DELETE -Uri "$($API.BaseUrl)/zones/v2/$($Zone.id)" -ContentType "application/json; charset=utf-8"
             }
         }
     }
@@ -219,11 +207,6 @@ function Add-CyDeviceToZone {
         if ($zoneIds -isnot [array]) {
             $zoneIds = @($zoneIds)
         }
-
-        $headers = @{
-            "Accept" = "application/json"
-            "Authorization" = "Bearer $($API.AccessToken)"
-        }
     }
 
     Process {
@@ -236,7 +219,7 @@ function Add-CyDeviceToZone {
         $json = $updateMap | ConvertTo-Json
         Write-Verbose "Update device JSON: $($json)"
         # remain silent
-        $null = Invoke-CyRestMethod -Method PUT -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)" -ContentType "application/json; charset=utf-8" -Headers $headers -Body $json
+        $null = Invoke-CyRestMethod -API $API -Method PUT -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)" -ContentType "application/json; charset=utf-8" -Body $json
     }
 }
 <#
@@ -273,11 +256,6 @@ function Remove-CyDeviceFromZone {
         if ($zoneIds -isnot [array]) {
             $zoneIds = @($zoneIds)
         }
-
-        $headers = @{
-            "Accept" = "application/json"
-            "Authorization" = "Bearer $($API.AccessToken)"
-        }
     }
 
     Process {
@@ -289,6 +267,6 @@ function Remove-CyDeviceFromZone {
 
         $json = $updateMap | ConvertTo-Json
         # remain silent
-        $null = Invoke-CyRestMethod -Method PUT -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)" -ContentType "application/json; charset=utf-8" -Headers $headers -Body $json
+        $null = Invoke-CyRestMethod -API $API -Method PUT -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)" -ContentType "application/json; charset=utf-8" -Body $json
     }
 }

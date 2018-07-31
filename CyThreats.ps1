@@ -67,10 +67,6 @@ function Update-CyDeviceThreat {
     )
 
     Begin {
-        $headers = @{
-            "Accept" = "application/json"
-            "Authorization" = "Bearer $($API.AccessToken)"
-        }
     }
 
     Process {
@@ -88,10 +84,10 @@ function Update-CyDeviceThreat {
         # remain silent
         switch ($PSCmdlet.ParameterSetName) {
             "ByDeviceId" {
-                $output = Invoke-CyRestMethod -Method POST -Uri "$($API.BaseUrl)/devices/v2/$($DeviceId)/threats" -ContentType "application/json; charset=utf-8" -Headers $headers -Body $json
+                $output = Invoke-CyRestMethod -API $API -Method POST -Uri "$($API.BaseUrl)/devices/v2/$($DeviceId)/threats" -ContentType "application/json; charset=utf-8" -Body $json
             }
             "ByDevice" {
-                $output = Invoke-CyRestMethod -Method POST -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)/threats" -ContentType "application/json; charset=utf-8" -Headers $headers -Body $json
+                $output = Invoke-CyRestMethod -API $API -Method POST -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)/threats" -ContentType "application/json; charset=utf-8" -Body $json
             }
         }
         
@@ -121,11 +117,7 @@ function Get-CyThreatDetail {
         )
 
     Process {
-        $headers = @{
-            "Accept" = "application/json"
-            "Authorization" = "Bearer $($API.AccessToken)"
-        }
-        Invoke-CyRestMethod -Method GET -Uri  "$($API.BaseUrl)/threats/v2/$($SHA256)" -Headers $headers | Convert-CyObject
+        Invoke-CyRestMethod -API $API -Method GET -Uri  "$($API.BaseUrl)/threats/v2/$($SHA256)" | Convert-CyObject
     }
 }
 
@@ -152,11 +144,7 @@ function Get-CyThreatDownloadLink {
         )
 
     Process {
-        $headers = @{
-            "Accept" = "application/json"
-            "Authorization" = "Bearer $($API.AccessToken)"
-        }
-        Invoke-CyRestMethod -Method GET -Uri  "$($API.BaseUrl)/threats/v2/download/$($SHA256)" -Headers $headers
+        Invoke-CyRestMethod -API $API -Method GET -Uri  "$($API.BaseUrl)/threats/v2/download/$($SHA256)" 
     }
 }
 

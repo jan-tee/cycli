@@ -34,11 +34,6 @@ function Get-CyUserDetail {
         )
 
     Process {
-        $headers = @{
-            "Accept" = "application/json"
-            "Authorization" = "Bearer $($API.AccessToken)"
-        }
-
         switch ($PSCmdlet.ParameterSetName) {
             "ByUserIdOrEmail" {
                 $url = "$($API.BaseUrl)/users/v2/$($UserId)"
@@ -49,6 +44,6 @@ function Get-CyUserDetail {
         }
 
         # Read-CyData -API $API -Uri $url
-        Invoke-CyRestMethod -Method GET -Uri $url -Headers $headers | Convert-CyObject
+        Invoke-CyRestMethod -API $API -Method GET -Uri $url | Convert-CyObject
     }
 }

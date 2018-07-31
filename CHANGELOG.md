@@ -1,5 +1,10 @@
 # Changelog
 
+## v 0.6.6
+* Added "Create policy" API transaction
+* Added auto-renewal of API token after 180s
+* Added Clear-CyAPIHandle cmdlet to clear the session API handle
+
 ## v 0.6.5
 * Updated function names
 * Prepared auto-renewal for tokens

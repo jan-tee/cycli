@@ -72,10 +72,6 @@ function Add-CyHashToGlobalList {
     )
 
     Begin {
-        $headers = @{
-            "Accept" = "application/json"
-            "Authorization" = "Bearer $($API.AccessToken)"
-        }
         $APIListType = "GlobalQuarantine";
         if ($List -eq "GlobalSafeList") { $APIListType = "GlobalSafe" }
     }
@@ -101,7 +97,7 @@ function Add-CyHashToGlobalList {
 
         $json = $updateMap | ConvertTo-Json
         # remain silent
-        $null = Invoke-CyRestMethod -Method POST -Uri "$($API.BaseUrl)/globallists/v2" -ContentType "application/json; charset=utf-8" -Headers $headers -Body $json
+        $null = Invoke-CyRestMethod -API $API -Method POST -Uri "$($API.BaseUrl)/globallists/v2" -ContentType "application/json; charset=utf-8" -Body $json
     }
 }
 
@@ -134,10 +130,6 @@ function Remove-CyHashFromGlobalList {
     )
 
     Begin {
-        $headers = @{
-            "Accept" = "application/json"
-            "Authorization" = "Bearer $($API.AccessToken)"
-        }
         $APIListType = "GlobalQuarantine";
         if ($List -eq "GlobalSafeList") { $APIListType = "GlobalSafe" }
     }
@@ -149,6 +141,6 @@ function Remove-CyHashFromGlobalList {
         }
 
         $json = $updateMap | ConvertTo-Json
-        $null = Invoke-CyRestMethod -Method DELETE -Uri "$($API.BaseUrl)/globallists/v2" -ContentType "application/json; charset=utf-8" -Headers $headers -Body $json
+        $null = Invoke-CyRestMethod -API $API -Method DELETE -Uri "$($API.BaseUrl)/globallists/v2" -ContentType "application/json; charset=utf-8" -Body $json
     }
 }

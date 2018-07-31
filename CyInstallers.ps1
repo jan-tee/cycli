@@ -36,9 +36,5 @@ function Get-CyAgentInstallerLink {
             Throw "For non-Linux OS, parameter 'Package' must be set."
         }
  
-        $headers = @{
-            "Accept" = "application/json"
-            "Authorization" = "Bearer $($API.AccessToken)"
-        }
-        Invoke-CyRestMethod -Method GET -Uri  "$($API.BaseUrl)/devices/v2/installer?product=$($Product)&os=$($OS)&package=$($Package)&architecture=$($Architecture)" -Headers $headers
+        Invoke-CyRestMethod -API $API -Method GET -Uri  "$($API.BaseUrl)/devices/v2/installer?product=$($Product)&os=$($OS)&package=$($Package)&architecture=$($Architecture)"
 }
