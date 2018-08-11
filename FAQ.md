@@ -11,6 +11,10 @@ Examples include:
 * Manage devices and zones - creation, assignment of membership, removal...
 * Completely automating common administrative tasks, such as safelisting trusted files
 
+## Where can I find examples?
+
+You can find the [CyCLI examples](https://github.com/jan-tee/cycli-examples) on Github.
+
 ## How do I install the module?
 
 Run `Install-Module CyCLI` from an administrative Powershell console. Once installed, close the console and create your first console entry.

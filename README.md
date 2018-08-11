@@ -1,6 +1,14 @@
 # CyCLI
 API &amp; CLI tools for Cylance
 
+## FAQ
+
+You can find the [FAQ here in this repository](FAQ.md).
+
+## Examples
+
+You can find the [CyCLI examples](https://github.com/jan-tee/cycli-examples) on Github, too.
+
 ## Prerequisites & Installation
 
 All instructions assume PowerShell 5.0 or greater. Download the latest Microsoft Management Framework if you are on an earlier version.
