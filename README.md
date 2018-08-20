@@ -13,19 +13,12 @@ You can find the [CyCLI examples](https://github.com/jan-tee/cycli-examples) on 
 
 All instructions assume PowerShell 5.0 or greater. Download the latest Microsoft Management Framework if you are on an earlier version.
 
-### Option 1: Install from PowerShell Gallery
+### Install from PowerShell Gallery
 
 1. From an administrative PowerShell prompt, enter `Install-Module CyCLI`
 1. To use, `Import-Module CyCLI`
 
-### Option 2: Install from source 
-
-**Only do this if you want to contribute new code, and know what you are doing and why.** In fact, *please* never do this if you don't know exactly why.
-
-1. Clone the repository.
-1. Install the ImportExcel module: `Install-Module ImportExcel`
-1. Install the module: `.\InstallModule`
-1. Import the CyCLI: `Import-Module CyCLI`
+You can install from source too, but **only do this if you want to contribute new code to the module, and know what you are doing and why.**. [Instructions for manual install](MANUAL-INSTALL-FROM-SOURCE.md).
 
 ## See all verbs
 
@@ -41,17 +34,21 @@ The module uses a `consoles.json` file that can reside in your user profile path
 
 It will also automatically create the `consoles.json` file for you when you run any ```New-CyConsoleConfig``` commands.
 
+### Import the module
+
+*All examples assume you have imported the module using `Import-Module CyCLI` first.*
+
 ### Proxy support
 
 If you need to use a proxy, run ```Set-CyGlobalSettings``` as the first cmdlet in any API session to configure proxy settings.
 
 ### Create your first API connection
 
-To get started, run ```New-CyConsoleConfig``` and answer all prompts.
+To get started, run ```New-CyConsoleConfig``` and answer all prompts. Run ```get-help New-CyConsoleConfig``` to look up the possible values for the `Region` argument.
 
 **Note:** *If you choose to supply parameters rather than answering prompts, please note that the API secret cannot be given as a literal string command line argument because it is processed as a secure string (and stored using DPAPI).*
 
-*All examples assume you have imported the module using `Import-Module CyCLI` first.*
+The `Console` argument throughout the module is a string that you can use to reference a set of credentials, so you do not have to remember/reference it yourself. An added advantage is that credentials are stored protected by DPAPI and you do not need to worry about accidentally sharing them when sharing your scripts.
 
 ## Example use of Powershell cmdlets for the console API
 
