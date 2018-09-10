@@ -327,8 +327,15 @@ function Get-CyDateFromString {
     )
     # convert e.g. 2018-03-07T13:21:07 to Date
     # convert e.g. 2018-03-07T13:21:07.123 to Date (date_offline uses fractional seconds)
+    # convert e.g. 2018-09-01T14:15:47.164Z to Date (OccurenceTime uses Z suffix)
     Write-Verbose "Converting date $($Date) to [DateTime]"
-    $dt = [DateTime]::ParseExact($Date, "yyyy-MM-ddTHH:mm:ss.FFFFFFF", [Globalization.CultureInfo]::InvariantCulture, [Globalization.DateTimeStyles]::AssumeUniversal)
+    if ($Date -match ".*Z") 
+    {
+        # ends with "Z"; remove the last character
+        $dt = [DateTime]::ParseExact($Date -replace ".$", "yyyy-MM-ddTHH:mm:ss.FFFFFFF", [Globalization.CultureInfo]::InvariantCulture, [Globalization.DateTimeStyles]::AssumeUniversal)
+    } else {
+        $dt = [DateTime]::ParseExact($Date, "yyyy-MM-ddTHH:mm:ss.FFFFFFF", [Globalization.CultureInfo]::InvariantCulture, [Globalization.DateTimeStyles]::AssumeUniversal)
+    }
     Write-Verbose "Conversion result: $($dt)"
     return $dt
 }
@@ -343,7 +350,7 @@ function Convert-CyObject {
         [PSCustomObject]$CyObject
         )
     Begin {
-        $fields = @("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified")
+        $fields = @("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified", "OccurrenceTime")
     }
     Process {
         foreach ($f in $fields) {

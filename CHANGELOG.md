@@ -1,5 +1,9 @@
 # Changelog
 
+## v 0.6.7 (development only)
+* Added first new OPTICS transactions
+* Added date conversion support for OPTICS detections
+
 ## v 0.6.6
 * Added "Create policy" API transaction
 * Added auto-renewal of API token after 180s
