@@ -108,6 +108,7 @@ function Update-CyDetection {
         [parameter(Mandatory=$false)]
         [CylanceAPIHandle]$API = $GlobalCyAPIHandle,
         [parameter(Mandatory=$false)]
+        [ValidateSet ("New", "False Positive", "Follow Up", "In Progress", "Reviewed", "Done")]
         [string]$Status,
         [parameter(Mandatory=$false)]
         [string]$Comment,
@@ -130,7 +131,7 @@ function Update-CyDetection {
     Process {
         $transaction = @(
             @{
-                "detection_id" = $DetectionId;
+                "detection_id" = $Detection.Id;
                 "field_to_update" = $updateFields;
             }
         )

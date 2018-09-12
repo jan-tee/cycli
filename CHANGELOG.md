@@ -1,5 +1,8 @@
 # Changelog
 
+## v.0.7.0
+* Release with some OPTICS transactions
+
 ## v 0.6.7 (development only)
 * Added first new OPTICS transactions
 * Added date conversion support for OPTICS detections
