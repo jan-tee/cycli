@@ -2,6 +2,7 @@
 
 ## v.0.7.1
 * Added Remove-CyPolicy
+* Added License file to module
 
 ## v.0.7.0
 * Release with some OPTICS transactions
