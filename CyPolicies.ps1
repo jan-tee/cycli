@@ -67,7 +67,7 @@ function Set-CyPolicyForDevice {
     Optional. API Handle (use only when not using session scope).
 
 .PARAMETER Policy
-    The device to retrieve the Detail for.
+    The policy to retrieve.
 #>
 function Get-CyPolicy {
     Param (
@@ -125,5 +125,32 @@ function New-CyPolicy {
 
         $json = $updateMap | ConvertTo-Json
         Invoke-CyRestMethod -API $API -Method POST -Uri "$($API.BaseUrl)/policies/v2" -ContentType "application/json; charset=utf-8" -Body $json
+    }
+}
+
+<#
+.SYNOPSIS
+    Removes the given Policy from the console.
+
+.PARAMETER API
+    Optional. API Handle (use only when not using session scope).
+
+.PARAMETER Policy
+    The policy to retrieve the Detail for.
+#>
+function Remove-CyPolicy {
+    Param (
+        [parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [CylanceAPIHandle]$API = $GlobalCyAPIHandle,
+        [Parameter(
+            Mandatory=$true, 
+            ValueFromPipeline=$true,
+            ValueFromPipelineByPropertyName=$true)]
+            [object[]]$Policy
+        )
+
+    Process {
+        Invoke-CyRestMethod -API $API -Method DELETE -Uri  "$($API.BaseUrl)/policies/v2/$($Policy.id)" | Convert-CyObject
     }
 }
