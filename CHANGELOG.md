@@ -1,5 +1,11 @@
 # Changelog
 
+## v.0.7.3
+* Added cmdlets for policy creation, cloning, common list settings changes: New-CyPolicy, Update-CyPolicy, Add-CyPolicyListSetting, Get-CyPolicyScaffold
+
+## v.0.7.2
+* Packaging change for powershellgallery.com
+
 ## v.0.7.1
 * Added Remove-CyPolicy
 * Added License file to module
