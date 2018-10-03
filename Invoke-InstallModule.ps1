@@ -31,7 +31,8 @@ Begin {
             'CyInstallers.ps1',
             'CyGlobalLists.ps1',
             'CyUsers.ps1',
-            'CyOptics.ps1'
+            'CyOptics.ps1',
+            'License.txt'
         )
     }
     Catch {
