@@ -135,7 +135,8 @@ function Update-CyDetection {
                 "field_to_update" = $updateFields;
             }
         )
-        $json = $transaction | ConvertTo-Json
+        $json = ConvertTo-Json $transaction
+        Write-Verbose "$($json)"
         Invoke-CyRestMethod -API $API -Method POST -Uri "$($API.BaseUrl)/detections/v2/update/" -Body $json
     }
 }
