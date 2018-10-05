@@ -441,7 +441,7 @@ function Update-CyPolicy {
     Begin {
         # support passing the email address instead of a user object
         if ($User -match ".+@.+") {
-            $User = Get-CyUserByEmail -Email $User
+            $User = Get-CyUserByEmail -API $API -Email $User
         }
     }
 
@@ -487,7 +487,7 @@ function Copy-CyPolicy {
 
     # support passing the email address instead of a user object
     if ($User -match ".+@.+") {
-        $User = Get-CyUserByEmail -Email $User
+        $User = Get-CyUserByEmail -API $API -Email $User
     }
 
     $shallowPolicy = Get-CyPolicyList | where name -eq $SourcePolicyName
