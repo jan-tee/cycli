@@ -26,5 +26,5 @@ function Get-CyUserByEmail {
         [string]$Email
         )
 
-    Get-CyUserList | Where-Object email -eq $Email
+    Get-CyUserList -API $API | Where-Object email -eq $Email
 }
