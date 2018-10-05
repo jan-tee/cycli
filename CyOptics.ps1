@@ -136,6 +136,6 @@ function Update-CyDetection {
             }
         )
         $json = $transaction | ConvertTo-Json
-        Invoke-CyRestMethod -API $API -Method POST -Uri "$($API.BaseUrl)/detections/v2" -Body $json
+        Invoke-CyRestMethod -API $API -Method POST -Uri "$($API.BaseUrl)/detections/v2/update/" -Body $json
     }
 }

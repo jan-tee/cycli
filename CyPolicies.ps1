@@ -78,53 +78,11 @@ function Get-CyPolicy {
             Mandatory=$true, 
             ValueFromPipeline=$true,
             ValueFromPipelineByPropertyName=$true)]
-            [object[]]$Policy
+            [object]$Policy
         )
 
     Process {
         Invoke-CyRestMethod -API $API -Method GET -Uri  "$($API.BaseUrl)/policies/v2/$($Policy.id)" | Convert-CyObject
-    }
-}
-
-<#
-.SYNOPSIS
-    Creates a new policy.
-
-.PARAMETER API
-    Optional. API Handle (use only when not using session scope).
-
-.PARAMETER Name
-    The name of the new policy
-
-.PARAMETER Policy
-    The policy object.
-
-#>
-function New-CyPolicy {
-    Param (
-        [parameter(Mandatory=$false)]
-        [ValidateNotNullOrEmpty()]
-        [CylanceAPIHandle]$API = $GlobalCyAPIHandle,
-        [Parameter(Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
-        [String[]]$Name,
-        [Parameter(Mandatory=$true)]
-        [object]$Policy = $null
-    )
-    Begin {
-    }
-
-    Process {
-        $Policy.id = $null
-        $Policy.utc_timestamp = $null
-        $Policy.checksum = $null
-
-        $updateMap = @{
-            "policy" = $($Policy)
-            "user_id" =$($API.APIId)
-        }
-
-        $json = $updateMap | ConvertTo-Json
-        Invoke-CyRestMethod -API $API -Method POST -Uri "$($API.BaseUrl)/policies/v2" -ContentType "application/json; charset=utf-8" -Body $json
     }
 }
 
@@ -183,7 +141,7 @@ function Get-CyPolicyScaffold {
             }
             @{
                 name = "auto_uploading"
-                value = "1"
+                value = "0"
             }
             @{
                 name = "autoit_auto_uploading"
@@ -211,7 +169,7 @@ function Get-CyPolicyScaffold {
             }
             @{
                 name = "full_disc_scan"
-                value = "2"
+                value = "0"
             }
             @{
                 name = "kill_running_threats"
@@ -227,7 +185,7 @@ function Get-CyPolicyScaffold {
             }
             @{
                 name = "memory_exploit_detection"
-                value = "1"
+                value = "0"
             }
             @{
                 name = "ole_auto_uploading"
@@ -235,7 +193,7 @@ function Get-CyPolicyScaffold {
             }
             @{
                 name = "optics"
-                value = "1"
+                value = "0"
             }
             @{
                 name = "optics_application_control_auto_upload"
@@ -299,7 +257,7 @@ function Get-CyPolicyScaffold {
             }
             @{
                 name = "watch_for_new_files"
-                value = "1"
+                value = "0"
             }
             @{
                 name = "scan_exception_list"
@@ -429,7 +387,7 @@ function Get-CyPolicyScaffold {
     Policy object with settings to use. Optional.
 
 .PARAMETER User
-    User object (as returned by Get-CyUserDetail or Get-CyUserList) to use as creator.
+    User object (as returned by Get-CyUserDetail or Get-CyUserList) to use as creator, OR auser's email address.
 #>
 function New-CyPolicy {
     Param (
@@ -444,6 +402,10 @@ function New-CyPolicy {
         [object]$User
     )
     Begin {
+        # support passing the email address instead of a user object
+        if ($User -match ".+@.+") {
+            $User = Get-CyUserByEmail -Email $User
+        }
     }
 
     Process {
@@ -471,16 +433,20 @@ function Update-CyPolicy {
         [parameter(Mandatory=$false)]
         [ValidateNotNullOrEmpty()]
         [CylanceAPIHandle]$API = $GlobalCyAPIHandle,
-        [Parameter(Mandatory=$false)]
+        [Parameter(Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
         [object]$Policy = $null,
         [Parameter(Mandatory=$true)]
         [object]$User
     )
     Begin {
+        # support passing the email address instead of a user object
+        if ($User -match ".+@.+") {
+            $User = Get-CyUserByEmail -Email $User
+        }
     }
 
     Process {
-        # remove fields that don't sit well with policy puts
+        # remove fields that need to be removed for policy puts
         $Policy.checksum = ""
         $Policy.psobject.properties.Remove("policy_utctimestamp")
 
@@ -519,6 +485,11 @@ function Copy-CyPolicy {
         [object]$User
     )
 
+    # support passing the email address instead of a user object
+    if ($User -match ".+@.+") {
+        $User = Get-CyUserByEmail -Email $User
+    }
+
     $shallowPolicy = Get-CyPolicyList | where name -eq $SourcePolicyName
     $policy = Get-CyPolicy -API $API -Policy $shallowPolicy
 
@@ -555,14 +526,20 @@ function Add-CyPolicyListSetting {
     Process {
         switch ($Type) {
             "MemDefExclusionPath" {
-                $Policy.memoryviolation_actions.memory_exclusion_list += $Value
+                if (! ($Policy.memoryviolation_actions.memory_exclusion_list -contains $Value)) {
+                    $Policy.memoryviolation_actions.memory_exclusion_list += $Value
+                }
             }
             "ScriptControlExclusionPath" {
-                $Policy.script_control.global_settings.allowed_folders += $Value
+                if (! ($Policy.script_control.global_settings.allowed_folders -contains $Value)) {
+                    $Policy.script_control.global_settings.allowed_folders += $Value
+                }
             }
             "ScanExclusion" {
-                $scan_exception_list = $Policy.policy | where name -eq scan_exception_list
-                $scan_exception_list.value += $Value
+                $scan_exception_list = $Policy.policy | Where-Object name -eq scan_exception_list
+                if (! ($scan_exception_list.value -contains $Value)) {
+                    $scan_exception_list.value += $Value
+                }
             }
         }
     }

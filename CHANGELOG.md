@@ -1,5 +1,17 @@
 # Changelog
 
+## v.0.7.4
+* Updated OPTICS Update-CyDetection method
+* Added convenience methods: GetUserByEmail
+* Updated *-CyPolicy methods to be more robust + comfortable
+ * Accept "email" to identify the user
+ * Adding an exclusion already in the set will not add a duplicate but silently skip the action
+* Changed policy defaults to have memory protection disabled in empty policy
+* Changed policy defaults to have OPTICS disabled in empty policy
+* Changed policy defaults to have "Watch for New Files" disabled in empty policy
+* Changed policy defaults to have "Auto Upload" disabled in empty policy
+* Changed policy defaults to have "Background Threat Detection" disabled in empty policy
+
 ## v.0.7.3
 * Added cmdlets for policy creation, cloning, common list settings changes: New-CyPolicy, Update-CyPolicy, Add-CyPolicyListSetting, Get-CyPolicyScaffold
 
