@@ -32,6 +32,7 @@ Begin {
             'CyGlobalLists.ps1',
             'CyUsers.ps1',
             'CyOptics.ps1',
+            'CyConvenience.ps1',
             'license.txt'
         )
     }
