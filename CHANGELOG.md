@@ -1,5 +1,9 @@
 # Changelog
 
+## v.0.7.5
+* OPTICS Update-CyDetection now works
+* Bugfixes in *-CyPolicy methods to better support referencing users by email when an non-session API token is used
+
 ## v.0.7.4
 * Updated OPTICS Update-CyDetection method
 * Added convenience methods: GetUserByEmail
