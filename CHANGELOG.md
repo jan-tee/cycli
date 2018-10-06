@@ -1,5 +1,9 @@
 # Changelog
 
+## v.0.7.6
+* New-CyUser transaction added
+* Invoke-CySendUserInvite transaction added
+
 ## v.0.7.5
 * OPTICS Update-CyDetection now works
 * Bugfixes in *-CyPolicy methods to better support referencing users by email when an non-session API token is used
