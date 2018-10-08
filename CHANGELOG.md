@@ -1,6 +1,9 @@
 # Changelog
 
-v v.0.7.8
+## v.0.7.9
+* Removed redundant file from a published release
+
+## v.0.7.8
 * Get-CyTDRsForAllConsoles added
 * Add-CyPolicyExclusionsForApplication added to add application-specific configuration to policies from templates that are (for now) part of the module
 * Added templates for some common application exclusions
