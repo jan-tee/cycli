@@ -230,3 +230,43 @@ function Convert-CyTDRsToXLSX {
         Get-ExcelSummaryReport-FromTDR -ConsoleId $ConsoleId -Timestamp $Timestamp -OutputXLSX $OutputXLSX -TDRPath $TDRPath
     }
 }
+
+<#
+.SYNOPSIS
+    Downloads a number of Cylance console's TDR reports and converts them into Excel.
+
+.DESCRIPTION
+    Downloads a pre-configured list of of Cylance console's TDR reports and converts them into Excel.
+
+    Configure "Consoles.json" in the TDR path with your console data; you can use "New-CyConsoleConfig" to create entries.
+
+.PARAMETER TDRPath
+    Optional, the base path to store the TDR data. Defaults to $HOME\TDRs (use symoblic links!)
+
+.PARAMETER DefaultTDRUrl
+    Optional. When no TDR URL is specified in the console profile, use this default TDR URL (default = US)
+#>
+function Get-CyTDRsForAllConsoles() {
+    [CmdletBinding()]
+    Param (
+        [parameter(Mandatory=$False)]
+        [ValidateScript({Test-Path $_ -PathType Container })]
+        [String]$TDRPath = "$($HOME)\TDRs",
+        [parameter(Mandatory=$False)]
+        [String]$DefaultTDRUrl = "https://protect.cylance.com/Reports/ThreatDataReportV1/"
+    )
+
+    try {
+        $Consoles = Get-CyConsoleConfig
+    } catch {
+        Write-Error "There was an error parsing or accessing the console JSON file: $($TDRPath)\Consoles.json"
+        break
+    }
+    
+    $Consoles | Where-Object Token -ne $null | Where-Object AutoRetrieve -ne $false |
+    ForEach-Object {
+        Write-Host "Retrieving console $($_.ConsoleId)..."
+        $TDRUrl = if (([String]::Empty -eq $_.TDRUrl) -or ($_.TDRUrl -eq $null)) { $DefaultTDRUrl } else { $_.TDRUrl }
+        Get-CyTDRs -TDRPath $TDRPath -Id $_.ConsoleId -AccessToken $_.Token -TDRUrl $TDRUrl
+    }
+}
