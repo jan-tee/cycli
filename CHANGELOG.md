@@ -1,5 +1,13 @@
 # Changelog
 
+v v.0.7.8
+* Get-CyTDRsForAllConsoles added
+* Add-CyPolicyExclusionsForApplication added to add application-specific configuration to policies from templates that are (for now) part of the module
+* Added templates for some common application exclusions
+
+## v.0.7.7
+* Add-CyPolicyExclusionsForApplication added; can add policy exclusions for known AV/EPP applications from JSON definition files.
+
 ## v.0.7.6
 * New-CyUser transaction added
 * Invoke-CySendUserInvite transaction added

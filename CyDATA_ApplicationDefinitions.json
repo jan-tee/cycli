@@ -1,0 +1,208 @@
+[
+    {
+        "name": "Windows",
+        "os": "Windows",
+        "last_reviewed": "20181008",
+        "memory_exclusion_list": [
+            "\\Windows\\System32\\werfault.exe",
+            "\\Windows\\SysWow64\\werfault.exe"
+        ]
+    },
+    {
+        "name": "SCCM",
+        "memory_exclusion_list": [],
+        "last_reviewed": "20181008",
+        "scan_exception_list": [
+            "c:\\windows\\ccmcache\\",
+            "c:\\windows\\ccm\\systemtemp\\"
+        ],
+        "script_allowed_folders": [
+            "c:/windows/ccm/systemtemp/*.vbs",
+            "c:/windows/ccm/systemtemp/*.ps1"
+        ]
+    },
+    {
+        "name": "McAfee",
+        "os": "Linux",
+        "last_reviewed": "20181008",
+        "memory_exclusion_list": [],
+        "scan_exception_list": [
+            "/opt/isec/ens/threatprevention/bin/",
+            "/opt/isec/ens/esp/bin/",
+            "/opt/McAfee/cma/"
+        ],
+        "exclusions_in_app": {
+            "exception_list": [
+                "/opt/cylance",
+                "/usr/lib/systemd/system/cylancesvc.service",
+                "/etc/sysconfig/modules/cylance.modules",
+                "/usr/src/CyProtectDrv-1.2",
+                "/tmp/CylanceDesktopArchive",
+                "/tmp/CylanceDesktopRemoteFile"
+            ]
+        }
+    },
+    {
+        "name": "McAfee",
+        "os": "Windows",
+        "kb_link": "https://support.cylance.com/s/article/CylancePROTECT-Exclusions-for-McAfee-EndPoint-Security",
+        "goes_beyond_KB": true,
+        "last_reviewed": "20181008",
+        "memory_exclusion_list": [
+            "\\mcdatrep.exe",
+            "\\Program Files\\Common Files\\McAfee\\SystemCore\\mfemms.exe",
+            "\\Program Files\\McAfee\\Agent\\masvc.exe",
+            "\\Program Files\\McAfee\\Agent\\x86\\macmnsvc.exe",
+            "\\Program Files\\McAfee\\Agent\\x86\\macompatsvc.exe",
+            "\\Program Files\\McAfee\\Agent\\x86\\mctray.exe",
+            "\\Program Files\\McAfee\\Agent\\x86\\mfemactl.exe",
+            "\\Program Files\\McAfee\\Endpoint Security\\Endpoint Security Platform\\mfeesp.exe",
+            "\\Program files\\mcafee\\endpoint security\\threat prevention\\mfetp.exe",
+            "\\Windows\\System32\\mfevtps.exe",
+            "\\Program Files\\McAfee\\Endpoint Security\\Firewall\\mfefw.exe",
+            "\\Program Files\\McAfee\\Endpoint Security\\Adaptive threat Protection\\mfeatp.exe",
+            "\\Program Files\\Common Files\\McAfee\\SystemCore\\MFEFIRE.exe",
+            "\\Program Files\\Common Files\\McAfee\\SystemCore\\mfecanary.exe",
+            "\\Program Files (x86)\\McAfee\\Endpoint Security\\Endpoint Security Platform\\mfeconsole.exe",
+            "\\Program Files (x86)\\McAfee\\Common Framework\\updaterui.exe",
+            "\\Program Files\\McAfee\\Endpoint Security\\Adaptive threat Protection\\mfeatp.exe",
+            "\\Program Files\\Common Files\\McAfee\\AVSolution\\mcshield.exe",
+            "\\Program Files\\McAfee\\Host Intrusion Prevention\\FireSvc.exe"
+        ],
+        "scan_exception_list": [
+            "C:\\Quarantine"
+        ]
+    },
+    {
+        "name": "Defender",
+        "os": "Windows",
+        "last_reviewed": "20181008",
+        "memory_exclusion_list": [
+            "\\program files\\windows defender advanced threat protection\\mssense.exe",
+            "\\program files\\windows defender\\nissrv.exe",
+            "\\program files\\windows defender\\msmpeng.exe"
+        ],
+        "scan_exception_list": [
+            "C:\\Program Files\\Windows Defender Advanced Threat Protection\\",
+            "C:\\ProgramData\\Microsoft\\Windows Defender\\",
+            "C:\\Program Files\\Windows Defender\\",
+            "C:\\ProgramData\\Microsoft\\Windows Defender Advanced Threat Protection\\"
+        ]
+    },
+    {
+        "name": "SophosAV",
+        "os": "Windows",
+        "kb_link": "https://support.cylance.com/s/article/CylancePROTECT-Exclusions-for-Sophos",
+        "goes_beyond_KB": true,
+        "last_reviewed": "20181008",
+        "memory_exclusion_list": [
+            "\\Sophos\\AutoUpdate\\ALMon.exe",
+            "\\Sophos\\AutoUpdate\\ALsvc.exe",
+            "\\Sophos\\AutoUpdate\\ALUpdate.exe",
+            "\\Sophos\\AutoUpdate\\SophosUpdate.exe",
+            "\\Sophos\\AutoUpdate\\Telemetry\\AUTelem.exe",
+            "\\Sophos\\AutoUpdate\\Telemetry\\GatherTelem.exe",
+            "\\Sophos\\AutoUpdate\\Telemetry\\SubmitTelem.exe",
+            "\\Sophos\\Remote Management System\\ClientMRInit.exe",
+            "\\Sophos\\Remote Management System\\ManagementAgentNT.exe",
+            "\\Sophos\\Remote Management System\\RouterNT.exe",
+            "\\Sophos\\Sophos Anti-Virus\\BackgroundScanClient.exe",
+            "\\Sophos\\Sophos Anti-Virus\\ForceUpdateAlongSideSGN.exe",
+            "\\Sophos\\Sophos Anti-Virus\\Native.exe",
+            "\\Sophos\\Sophos Anti-Virus\\sav32cli.exe",
+            "\\Sophos\\Sophos Anti-Virus\\SAVAdminService.exe",
+            "\\Sophos\\Sophos Network Threat Protection\\bin\\SntpService.exe",
+            "\\Sophos\\Sophos Anti-Virus\\SAVCleanupService.exe",
+            "\\Sophos\\Sophos Anti-Virus\\SavMain.exe",
+            "\\Sophos\\Sophos Anti-Virus\\SavProgress.exe",
+            "\\Sophos\\Sophos Anti-Virus\\SavProxy.exe",
+            "\\Sophos\\Sophos Anti-Virus\\SavService.exe",
+            "\\Sophos\\Sophos Anti-Virus\\SAVTelem.exe",
+            "\\Sophos\\Sophos Anti-Virus\\sdcdevcon.exe",
+            "\\Sophos\\Sophos Anti-Virus\\sdcservice.exe",
+            "\\Sophos\\Sophos Anti-Virus\\ssr32.exe",
+            "\\Sophos\\Sophos Anti-Virus\\ssr64.exe",
+            "\\Sophos\\Sophos Anti-Virus\\WSCClient.exe",
+            "\\Sophos\\Sophos Anti-Virus\\Web Control\\swc_service.exe",
+            "\\Sophos\\Sophos Anti-Virus\\Web Intelligence\\swi_di.exe",
+            "\\Sophos\\Sophos Anti-Virus\\Web Intelligence\\swi_fc.exe",
+            "\\Common Files\\Sophos\\Web Intelligence\\swi_fc.exe",
+            "\\Sophos\\Sophos Anti-Virus\\Web Intelligence\\swi_filter.exe",
+            "\\Sophos\\Sophos Anti-Virus\\Web Intelligence\\swi_lsp32_util.exe",
+            "\\Sophos\\Sophos Anti-Virus\\Web Intelligence\\swi_lspdiag.exe",
+            "\\Sophos\\Sophos Anti-Virus\\Web Intelligence\\swi_lspdiag_64.exe",
+            "\\Sophos\\Sophos Anti-Virus\\Web Intelligence\\swi_service.exe",
+            "\\Sophos\\Sophos Anti-Virus\\Web Intelligence\\swi_update_64.exe",
+            "\\Sophos\\Sophos System Protection\\ssp.exe",
+            "\\Sophos\\Sophos Patch Agent\\spa.exe",
+            "\\Sophos\\Health\\health.exe",
+            "\\Sophos\\Health\\heartbeat.exe",
+            "\\Sophos\\Sophos Data Recorder\\sdrservice.exe",
+            "\\Sophos\\Clean\\sophosclean.exe"
+        ],
+        "scan_exception_list": [
+            "C:\\ProgramData\\Sophos",
+            "C:\\Program Files\\Sophos",
+            "C:\\Program Files (x86)\\Sophos"
+        ]
+    },
+    {
+        "name": "Symantec",
+        "os": "Windows",
+        "last_reviewed": "20181008",
+        "scan_exception_list": [
+            "C:\\Program Files\\Symantec\\",
+            "C:\\Program Files (x86)\\Symantec\\",
+            "C:\\ProgramData\\Symantec\\"
+        ],
+        "memory_exclusion_list": [
+            "\\ccSvcHost.exe"
+        ]
+    },
+    {
+        "name": "Tanium",
+        "os": "Windows",
+        "kb_link": "https://support.cylance.com/s/article/CylancePROTECT-Exclusions-for-Tanium",
+        "goes_beyond_KB": false,
+        "last_reviewed": "20181008",
+        "scan_exception_list": [
+            "C:\\Program Files (x86)\\Tanium",
+            "C:\\Program Files\\Tanium"
+        ],
+        "memory_exclusion_list": [
+            "\\Program Files (x86)\\Tanium\\Tanium Client\\TaniumClient.exe",
+            "\\Program Files\\Tanium\\Tanium Client\\TaniumClient.exe"
+        ],
+        "script_allowed_folders": [
+            "\\Program Files (x86)\\Tanium",
+            "\\Program Files\\Tanium"
+        ]
+    },
+    {
+        "name": "Tanium",
+        "os": "macOS",
+        "kb_link": "https://support.cylance.com/s/article/CylancePROTECT-Exclusions-for-Tanium",
+        "goes_beyond_KB": false,
+        "last_reviewed": "20181008",
+        "scan_exception_list": [
+            "C:\\Program Files (x86)\\Tanium",
+            "C:\\Program Files\\Tanium"
+        ],
+        "memory_exclusion_list": [
+            "/Library/Tanium/TaniumClient"
+        ]
+    },
+    {
+        "name": "Tanium",
+        "os": "Linux",
+        "kb_link": "https://support.cylance.com/s/article/CylancePROTECT-Exclusions-for-Tanium",
+        "goes_beyond_KB": false,
+        "last_reviewed": "20181008",
+        "scan_exception_list": [
+            "/opt/Tanium/TaniumClient/taniumclient"
+        ],
+        "memory_exclusion_list": [
+            "/opt/Tanium/TaniumClient"
+        ]
+    }
+]

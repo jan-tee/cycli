@@ -33,6 +33,7 @@ Begin {
             'CyUsers.ps1',
             'CyOptics.ps1',
             'CyConvenience.ps1',
+            'CyDATA_ApplicationDefinitions.json'
             'license.txt'
         )
     }
