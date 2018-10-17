@@ -20,11 +20,11 @@ All instructions assume PowerShell 5.0 or greater. Download the latest Microsoft
 
 You can install from source too, but **only do this if you want to contribute new code to the module, and know what you are doing and why.**. [Instructions for manual install](MANUAL-INSTALL-FROM-SOURCE.md).
 
-If you receive an error message like this:
+If you receive this error message this:
 
 ```WARNING: The specified module 'CyCLI' with PowerShellGetFormatVersion '2.0' is not supported by the current version of PowerShellGet. Get the latest version of the PowerShellGet module to install this module, 'CyCLI'.```
 
-Then you need to upgrade PowerShellGet to install. This is caused by a change in the minimum required PowerShellGet package version for PowerShellGallery.com. To fix it, from an administrative PowerShel prompt, enter `Update-Module PowerShellGet -force`, and after it completes successfully, restart the administrative PowerShell prompt and follow the instructions above again.
+Then you need to upgrade PowerShellGet to install. This is caused by a change in the minimum required PowerShellGet package version for PowerShellGallery.com. To fix it, from an administrative PowerShell prompt, enter `Update-Module PowerShellGet -force`, and after it completes successfully, restart the administrative PowerShell prompt and follow the instructions above again.
 
 ## See all verbs
 
