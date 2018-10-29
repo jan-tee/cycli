@@ -42,8 +42,8 @@ function Set-CyPolicyForDevice {
     )
 
     Begin {
-        if ($null -eq $Policy.id) {
-            throw "Policy object does not contain 'id' property."
+        if ($null -eq $Policy.policy_id) {
+            throw "Policy object does not contain 'policy_id' property."
         }
     }
 
