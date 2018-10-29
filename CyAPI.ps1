@@ -131,7 +131,7 @@ function Get-CyAPI {
                     $reader = New-Object System.IO.StreamReader($result)
                     $reader.BaseStream.Position = 0
                     $reader.DiscardBufferedData()
-                    Write-Error "Could not obtain valid API token. This may mean that (a) your API credentials are incorrect or (b) your API auth URL is incorrect (use Get-Help Get-CyAPI to get a list of URLs), and your code is attempting to authenticate to the wrong global API instance."
+                    Write-Error "Could not obtain valid API token. This may mean that (a) your API credentials are incorrect or (b) your API auth URL is incorrect (use Get-Help Get-CyAPI to get a list of URLs), and your code is attempting to authenticate to the wrong global API instance, or (c) the time or time zone on your device is set incorrectly."
                     if ($Scope -eq "Session") {
                         $script:GlobalCyAPIHandle = $null
                     }
