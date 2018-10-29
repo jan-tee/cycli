@@ -524,21 +524,24 @@ function Add-CyPolicyListSetting {
     }
 
     Process {
-        switch ($Type) {
-            "MemDefExclusionPath" {
-                if (! ($Policy.memoryviolation_actions.memory_exclusion_list -contains $Value)) {
-                    $Policy.memoryviolation_actions.memory_exclusion_list += $Value
+        if (! ([String]::IsNullOrEmpty($Value))) {
+            switch ($Type) {
+                "MemDefExclusionPath" {
+                    if (! (($Policy.memoryviolation_actions.memory_exclusion_list -contains $Value)))
+                        {
+                        $Policy.memoryviolation_actions.memory_exclusion_list += $Value
+                    }
                 }
-            }
-            "ScriptControlExclusionPath" {
-                if (! ($Policy.script_control.global_settings.allowed_folders -contains $Value)) {
-                    $Policy.script_control.global_settings.allowed_folders += $Value
+                "ScriptControlExclusionPath" {
+                    if (! ($Policy.script_control.global_settings.allowed_folders -contains $Value)) {
+                        $Policy.script_control.global_settings.allowed_folders += $Value
+                    }
                 }
-            }
-            "ScanExclusion" {
-                $scan_exception_list = $Policy.policy | Where-Object name -eq scan_exception_list
-                if (! ($scan_exception_list.value -contains $Value)) {
-                    $scan_exception_list.value += $Value
+                "ScanExclusion" {
+                    $scan_exception_list = $Policy.policy | Where-Object name -eq scan_exception_list
+                    if (! ($scan_exception_list.value -contains $Value)) {
+                        $scan_exception_list.value += $Value
+                    }
                 }
             }
         }
