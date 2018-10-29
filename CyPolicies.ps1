@@ -50,7 +50,7 @@ function Set-CyPolicyForDevice {
     Process {
         $updateMap = @{
             "name" = $($Device.name)
-            "policy_id" = $($Policy.id)
+            "policy_id" = $($Policy.policy_id)
         }
 
         $json = $updateMap | ConvertTo-Json
