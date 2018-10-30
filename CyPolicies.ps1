@@ -41,16 +41,33 @@ function Set-CyPolicyForDevice {
         [object]$Policy
     )
 
-    Begin {
-        if ($null -eq $Policy.policy_id) {
-            throw "Policy object does not contain 'policy_id' property."
-        }
-    }
+    Begin
+	{
+		if (([string]::IsNullOrEmpty($Policy.policy_id)) -and ([string]::IsNullOrEmpty($Policy.id)))
+		{
+			throw "Policy object does not contain 'policy_id' or 'id' property."
+		}
+		if (([string]::IsNullOrEmpty($Policy.policy_id)) -and (![string]::IsNullOrEmpty($Policy.id)))
+		{
+			#ok
+		}
+		if (!([string]::IsNullOrEmpty($Policy.policy_id)) -and ([string]::IsNullOrEmpty($Policy.id)))
+		{
+			$Policy | Add-Member -Name id -Value $Policy.policy_id -MemberType NoteProperty
+		}
+		if (!([string]::IsNullOrEmpty($Policy.policy_id)) -and (!([string]::IsNullOrEmpty($Policy.id))))
+		{
+			if(($Policy.policy_id).tostring() -ne ($Policy.id).tostring())
+			{
+				throw 'Different value found in policy_id and id, expected to be the same'
+			}
+		}
+	}
 
     Process {
         $updateMap = @{
             "name" = $($Device.name)
-            "policy_id" = $($Policy.policy_id)
+            "policy_id" = $($Policy.id)
         }
 
         $json = $updateMap | ConvertTo-Json
