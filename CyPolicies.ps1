@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     Gets a list of all policies from the console.
 
@@ -41,16 +41,37 @@ function Set-CyPolicyForDevice {
         [object]$Policy
     )
 
-    Begin {
-        if ($null -eq $Policy.id) {
-            throw "Policy object does not contain 'id' property."
-        }
-    }
+    Begin
+	{
+		if (([string]::IsNullOrEmpty($Policy.policy_id)) -and ([string]::IsNullOrEmpty($Policy.id)))
+		{
+			throw "Policy object does not contain 'policy_id' or 'id' property."
+		}
+		if (([string]::IsNullOrEmpty($Policy.policy_id)) -and (![string]::IsNullOrEmpty($Policy.id)))
+		{
+			 $PolicyID = $policy.id
+		}
+		if (!([string]::IsNullOrEmpty($Policy.policy_id)) -and ([string]::IsNullOrEmpty($Policy.id)))
+		{
+			 $PolicyID = $Policy.policy_id
+		}
+		if (!([string]::IsNullOrEmpty($Policy.policy_id)) -and (!([string]::IsNullOrEmpty($Policy.id))))
+		{
+			if(($Policy.policy_id).tostring() -eq ($Policy.id).tostring())
+			{
+			$PolicyID = $policy.id
+			}
+			else
+			{
+			throw 'Different value found in policy_id and id, expected to be the same'	
+			}
+		}
+	}
 
     Process {
         $updateMap = @{
             "name" = $($Device.name)
-            "policy_id" = $($Policy.id)
+            "policy_id" = $PolicyID
         }
 
         $json = $updateMap | ConvertTo-Json
