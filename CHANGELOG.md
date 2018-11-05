@@ -1,5 +1,10 @@
 # Changelog
 
+## v.0.8.0
+* Small bug fix in CyPolicies
+* Added better error condition comment in CyAPI.ps1
+* Incorporated 2Dman's policy assignment patch
+
 ## v.0.7.9
 * Removed redundant file from a published release
 
