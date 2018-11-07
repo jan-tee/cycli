@@ -1,5 +1,8 @@
 # Changelog
 
+## v.0.8.1
+* Added more AV definitions for exclusions to data file
+
 ## v.0.8.0
 * Small bug fix in CyPolicies
 * Added better error condition comment in CyAPI.ps1

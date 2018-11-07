@@ -43,6 +43,69 @@
         }
     },
     {
+        "name": "Kaspersky",
+        "os": "Windows",
+        "last_reviewed": "20181107",
+        "kb_link": "https://support.cylance.com/s/article/CylancePROTECT-Exclusions-for-Kaspersky-Anti-Virus",
+        "memory_exclusion_list": [
+        ],
+        "scan_exception_list": [
+        ],
+        "exclusions_in_app": {
+            "exception_list": [
+                "C:\\Program Files\\Cylance\\Desktop\\CylanceSvc.exe",
+                "C:\\Program Files\\Cylance\\Desktop\\CylanceUI.exe",
+                "%WINDIR%\\Temp\\CylanceDesktopRemoteFile\\",
+                "%WINDIR%\\Temp\\CylanceDesktopArchive\\",
+                "%WINDIR%\\System32\\Drivers\\CyProtectDrv*.sys",
+                "%WINDIR%\\System32\\Drivers\\CyDevFlt*.sys",
+                "%ProgramFiles%\\Cylance\\",
+                "%ProgramData%\\Cylance\\Desktop\\q\\",
+                "Outbound Port 443"
+            ]
+        }
+    },
+    {
+        "name": "TrendMicro",
+        "os": "Windows",
+        "last_reviewed": "20181107",
+        "kb_link": "https://support.cylance.com/s/article/CylancePROTECT-Exclusions-for-Trend-Micro",
+        "memory_exclusion_list": [
+            "\\Program Files (x86)\\Trend Micro\\BM\\TMBMSRV.exe",
+            "\\Program Files (x86)\\Trend Micro\\OfficeScan Client\\CCSF\\TmCCSF.exe",
+            "\\Program Files (x86)\\Trend Micro\\OfficeScan Client\\Ntrtscan.exe",
+            "\\Program Files (x86)\\Trend Micro\\OfficeScan Client\\PccNTMon.exe",
+            "\\Program Files (x86)\\Trend Micro\\OfficeScan Client\\TmListen.exe",
+            "\\Program Files (x86)\\Trend Micro\\OfficeScan Client\\TmPfw.exe"
+        ],
+        "scan_exception_list": [
+            "C:\\Program Files (x86)\\Trend Micro\\",
+            "C:\\ProgramData\\Trend Micro\\"
+        ],
+        "exclusions_in_app": {
+            "exception_list": [
+                "C:\\Program Files\\Cylance\\",
+                "C:\\Windows\\Temp\\CylanceDesktopArchive",
+                "C:\\Windows\\Temp\\CylanceDesktopRemoteFile",
+                "C:\\ProgramData\\Cylance\\Desktop\\q",
+                "C:\\Documents and Settings\\All Users\\Application Data\\Cylance\\Desktop\\q",
+                "C:\\Windows\\System32\\Drivers\\CyProtectDrv64.sys",
+                "C:\\Windows\\System32\\Drivers\\CyProtectDrv32.sys",
+                "C:\\Windows\\System32\\Drivers\\CyDevFlt64.sys",
+                "C:\\Windows\\System32\\Drivers\\CyDevFlt32.sys",
+                "C:\\Windows\\CyProtect.cache",
+                "C:\\Program Files\\Cylance\\Desktop\\CylanceSvc.exe",
+                "C:\\Program Files\\Cylance\\Desktop\\CylanceUI.exe",
+                "C:\\Program Files\\Cylance\\Desktop\\CyUpdate.exe",
+                "C:\\Program Files\\Cylance\\Desktop\\LocalePkg.exe",
+                "C:\\Program Files\\Cylance\\Desktop\\CylanceSvc.exe",
+                "C:\\Program Files\\Cylance\\Desktop\\CylanceUI.exe",
+                "C:\\Program Files\\Cylance\\Desktop\\CyUpdate.exe",
+                "C:\\Program Files\\Cylance\\Desktop\\LocalePkg.exe"
+            ]
+        }
+    },
+    {
         "name": "McAfee",
         "os": "Windows",
         "kb_link": "https://support.cylance.com/s/article/CylancePROTECT-Exclusions-for-McAfee-EndPoint-Security",
