@@ -22,7 +22,7 @@
         ]
     },
     {
-        "name": "McAfee",
+        "name": "McAfee_Linux",
         "os": "Linux",
         "last_reviewed": "20181008",
         "memory_exclusion_list": [],
@@ -43,7 +43,7 @@
         }
     },
     {
-        "name": "Kaspersky",
+        "name": "Kaspersky_Windows",
         "os": "Windows",
         "last_reviewed": "20181107",
         "kb_link": "https://support.cylance.com/s/article/CylancePROTECT-Exclusions-for-Kaspersky-Anti-Virus",
@@ -66,7 +66,7 @@
         }
     },
     {
-        "name": "TrendMicro",
+        "name": "TrendMicro_Windows",
         "os": "Windows",
         "last_reviewed": "20181107",
         "kb_link": "https://support.cylance.com/s/article/CylancePROTECT-Exclusions-for-Trend-Micro",
@@ -106,7 +106,7 @@
         }
     },
     {
-        "name": "McAfee",
+        "name": "McAfee_Windows",
         "os": "Windows",
         "kb_link": "https://support.cylance.com/s/article/CylancePROTECT-Exclusions-for-McAfee-EndPoint-Security",
         "goes_beyond_KB": true,
@@ -153,7 +153,7 @@
         ]
     },
     {
-        "name": "SophosAV",
+        "name": "SophosAV_Windows",
         "os": "Windows",
         "kb_link": "https://support.cylance.com/s/article/CylancePROTECT-Exclusions-for-Sophos",
         "goes_beyond_KB": true,
@@ -210,7 +210,7 @@
         ]
     },
     {
-        "name": "Symantec",
+        "name": "Symantec_Windows",
         "os": "Windows",
         "last_reviewed": "20181008",
         "scan_exception_list": [
@@ -223,7 +223,7 @@
         ]
     },
     {
-        "name": "Tanium",
+        "name": "Tanium_Windows",
         "os": "Windows",
         "kb_link": "https://support.cylance.com/s/article/CylancePROTECT-Exclusions-for-Tanium",
         "goes_beyond_KB": false,
@@ -242,7 +242,7 @@
         ]
     },
     {
-        "name": "Tanium",
+        "name": "Tanium_macOS",
         "os": "macOS",
         "kb_link": "https://support.cylance.com/s/article/CylancePROTECT-Exclusions-for-Tanium",
         "goes_beyond_KB": false,
@@ -256,7 +256,7 @@
         ]
     },
     {
-        "name": "Tanium",
+        "name": "Tanium_Linux",
         "os": "Linux",
         "kb_link": "https://support.cylance.com/s/article/CylancePROTECT-Exclusions-for-Tanium",
         "goes_beyond_KB": false,
