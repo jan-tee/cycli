@@ -240,6 +240,9 @@ function Get-CyConsoleArgumentAutoCompleter {
         [Int]$Position
     )
 
+    #$consoleIds = (Get-CyConsoleConfig).ConsoleId
+    #Get-CyDynamicParam @args -Options $consoleIds
+
     $consoleIds = (Get-CyConsoleConfig).ConsoleId
 
     if ($consoleIds.Count -eq 0) {
@@ -265,5 +268,49 @@ function Get-CyConsoleArgumentAutoCompleter {
     }
     $paramDictionary = new-object -Type System.Management.Automation.RuntimeDefinedParameterDictionary
     $paramDictionary.Add("$($ParameterName)", $consoleIdsRuntimeDefinedParam)
+    return $paramDictionary
+}
+
+function Get-CyDynamicParam {
+    [CmdletBinding()]
+    Param (
+        [parameter(Mandatory=$False)]
+        [Switch]$AllowMultiple = $False,
+        [parameter(Mandatory=$False)]
+        [Switch]$Mandatory,
+        [parameter(Mandatory=$True)]
+        [String]$ParameterName,
+        [parameter(Mandatory=$False)]
+        [String]$ParameterSetName,
+        [Parameter(Mandatory=$False)]
+        [Int]$Position,
+        [Parameter(Mandatory=$False)]
+        [String]$HelpMessage,
+        [Parameter(Mandatory=$True)]
+        [String[]]$Options
+    )
+
+    if ($Options.Count -eq 0) {
+        return $null
+    }
+
+    $attributes = new-object -Type System.Collections.ObjectModel.Collection[System.Attribute]
+    
+    $parameterAttribute = new-object System.Management.Automation.ParameterAttribute
+    $parameterAttribute.Mandatory = $Mandatory
+    if ($null -ne $Position) { $parameterAttribute.Position = $Position }
+    if (![String]::IsNullOrEmpty($HelpMessage)) { $parameterAttribute.HelpMessage = "Enter one or more console IDs, separated by commas" }
+    if (![String]::IsNullOrEmpty($ParameterSetName)) { $parameterAttribute.ParameterSetName = $ParameterSetName }
+    $attributes.Add($parameterAttribute)    
+
+    $validateSetAttribute = New-Object -type System.Management.Automation.ValidateSetAttribute($Options)
+    $attributes.Add($validateSetAttribute)
+    if ($AllowMultiple) { 
+        $OptionsRuntimeDefinedParam = new-object -Type System.Management.Automation.RuntimeDefinedParameter("$($ParameterName)", [String[]], $attributes)
+    } else { 
+        $OptionsRuntimeDefinedParam = new-object -Type System.Management.Automation.RuntimeDefinedParameter("$($ParameterName)", [String], $attributes)
+    }
+    $paramDictionary = new-object -Type System.Management.Automation.RuntimeDefinedParameterDictionary
+    $paramDictionary.Add("$($ParameterName)", $OptionsRuntimeDefinedParam)
     return $paramDictionary
 }
