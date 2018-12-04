@@ -42,26 +42,24 @@ function Get-CyUserByEmail {
 .PARAMETER Policy
     The policy object to change.
 #>
-function Add-CyPolicyExclusionsForApplication() {
+function Add-CyPolicyExclusionsForApplication {
     Param (
         [parameter(Mandatory=$false)]
         [ValidateNotNullOrEmpty()]
         [CylanceAPIHandle]$API = $GlobalCyAPIHandle,
-        [Parameter(Mandatory=$false)]
-        [String]$Definitions,
-        [Parameter(Mandatory=$true)]
-        [ValidateSet("Windows","macOS", "Linux")]
-        [String]$OS = "Windows",
-        [String]$Application,
-        [Parameter(Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
+        [Parameter(Mandatory=$true,
+            ValueFromPipeline=$true,
+            ValueFromPipelineByPropertyName=$true)]
         [pscustomobject]$Policy
     )
+    DynamicParam {
+        $Options = (Get-Content "$PSScriptRoot\CyDATA_ApplicationDefinitions.json" | ConvertFrom-Json).Name
+        Get-CyDynamicParam -Mandatory -AllowMultiple -ParameterName Application -Options $Options
+    }
 
     Begin {
-        if ([String]::IsNullOrEmpty($Definitions)) {
-            $Definitions = "$PSScriptRoot\CyDATA_ApplicationDefinitions.json"
-        }
-        $ApplicationDefinition = (Get-Content $Definitions | ConvertFrom-Json) | Where-Object name -eq $Application | Where-Object os -eq $OS
+        $Definitions = (Get-Content "$PSScriptRoot\CyDATA_ApplicationDefinitions.json" | ConvertFrom-Json)
+        $ApplicationDefinition = $Definitions | Where-Object name -eq $PSBoundParameters.Application
     }
 
     Process {
@@ -70,7 +68,7 @@ function Add-CyPolicyExclusionsForApplication() {
         }
 
         $ApplicationDefinition.scan_exception_list | ForEach-Object {
-            Add-CyPolicyListSetting -Type ScanExclusion  -Value $_ -Policy $Policy
+            Add-CyPolicyListSetting -Type ScanExclusion -Value $_ -Policy $Policy
         }
 
         $ApplicationDefinition.script_allowed_folders | ForEach-Object {
