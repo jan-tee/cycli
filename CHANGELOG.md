@@ -1,5 +1,18 @@
 # Changelog
 
+## v.0.8.2
+* Updated application definitions retrieval logic with autocompletion
+* Changed autocompletion implementation across module
+* Renamed Get-CyDateFromString to ConvertFrom-CyDateString
+* Moved OPTICS APIs into separate files for detections, packages, etc.
+* Fixed a few bugs with Add-CyPolicyExclusionsForApplication (dynamic expansion of "Application" parameter name), removed support for custom definitions for now
+* Added new OPTICS APIs:
+ * Get-CyDetectionRecentList
+ * Get-CyDetectionList updated to support query parameters. NOTE: currently, multi-valued query parameters are not yet supported
+ * New-CyInstaQuery
+ * Get-CyInstaQueryResults
+ * Get-CyInstaQueries
+
 ## v.0.8.1
 * Added more AV definitions for exclusions to data file
 
