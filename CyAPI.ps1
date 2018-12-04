@@ -320,7 +320,7 @@ Function Clear-CyAPIHandle {
 .PARAMETER Date
     The date string as returned by the API
 #>
-function Get-CyDateFromString {
+function ConvertFrom-CyDateString {
     Param (
         [Parameter(Mandatory=$true, Position=1)]
         [String]$Date
@@ -342,6 +342,26 @@ function Get-CyDateFromString {
 
 <#
 .SYNOPSIS
+    Converts a date to a date/time string as expected by the API
+
+.PARAMETER Date
+    The date to convert to string
+#>
+function ConvertTo-CyDateString {
+    Param (
+        [Parameter(Mandatory=$true, Position=1)]
+        [DateTime]$Date
+    )
+    Write-Verbose "Converting date $($Date) to string"
+
+    $dt = ([DateTime]$Date).ToUniversalTime()
+    $r = $dt.ToString("yyyy-MM-ddTHH:mm:ss.FFFZ", [Globalization.CultureInfo]::InvariantCulture)
+    Write-Verbose "Conversion result: $($r)"
+    return $r
+}
+
+<#
+.SYNOPSIS
     Converts all "date" strings received through the JSON API and turns them into "date" objects.
 #>
 function Convert-CyObject {
@@ -357,7 +377,7 @@ function Convert-CyObject {
             try {
                 if (($null -ne $CyObject.$f) -and ($CyObject.$f -isnot [DateTime])) {
                     Write-Verbose "Converting field $($f) (value: $($CyObject.$f)) to date time value"
-                    $newval = Get-CyDateFromString $CyObject.$f
+                    $newval = ConvertFrom-CyDateString $CyObject.$f
                     # I think we hit a bug in PowerShell. Previous code was $CyObject.$f = $newval.
                     # This would break on date conversion with a PropertyAssignmentException when called from Get-CyDeviceDetailByMac, but not when called by Get-CyDeviceDetail
                     $CyObject | Add-Member $f $newval -Force 
