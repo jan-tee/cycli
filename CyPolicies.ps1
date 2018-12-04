@@ -536,7 +536,9 @@ function Add-CyPolicyListSetting {
         [Parameter(Mandatory=$true)]
         [ValidateSet ("MemDefExclusionPath", "ScriptControlExclusionPath", "ScanExclusion" )]
         [String[]]$Type,
-        [Parameter(Mandatory=$false,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
+        [Parameter(Mandatory=$false,
+            ValueFromPipeline=$true,
+            ValueFromPipelineByPropertyName=$true)]
         [pscustomobject]$Policy,
         [Parameter(Mandatory=$false)]
         [String]$Value
@@ -549,18 +551,23 @@ function Add-CyPolicyListSetting {
             switch ($Type) {
                 "MemDefExclusionPath" {
                     if (! (($Policy.memoryviolation_actions.memory_exclusion_list -contains $Value)))
-                        {
+                    {
+                        Write-Verbose "Adding policy memory exclusion: $($Value)"
                         $Policy.memoryviolation_actions.memory_exclusion_list += $Value
                     }
                 }
                 "ScriptControlExclusionPath" {
-                    if (! ($Policy.script_control.global_settings.allowed_folders -contains $Value)) {
+                    if (! ($Policy.script_control.global_settings.allowed_folders -contains $Value))
+                    {
+                        Write-Verbose "Adding script control exclusion: $($Value)"
                         $Policy.script_control.global_settings.allowed_folders += $Value
                     }
                 }
                 "ScanExclusion" {
                     $scan_exception_list = $Policy.policy | Where-Object name -eq scan_exception_list
-                    if (! ($scan_exception_list.value -contains $Value)) {
+                    if (! ($scan_exception_list.value -contains $Value)) 
+                    {
+                        Write-Verbose "Adding scan folder exclusion: $($Value)"
                         $scan_exception_list.value += $Value
                     }
                 }

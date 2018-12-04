@@ -31,7 +31,9 @@ Begin {
             'CyInstallers.ps1',
             'CyGlobalLists.ps1',
             'CyUsers.ps1',
-            'CyOptics.ps1',
+            'CyOpticsDetections.ps1',
+            'CyOpticsPackages.ps1',
+            'CyOpticsInstaQuery.ps1',
             'CyConvenience.ps1',
             'CyDATA_ApplicationDefinitions.json'
             'license.txt'
