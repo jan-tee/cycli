@@ -464,7 +464,6 @@ function Invoke-CyRestMethod {
         {
             if ($API -ne $null) 
             {
-                Write-Verbose "Checkpoint 3"
                 $Headers.Authorization = "Bearer $($API.AccessToken)"
             }
         }
