@@ -223,3 +223,47 @@ function Update-CyDetection {
         Invoke-CyRestMethod -API $API -Method POST -Uri "$($API.BaseUrl)/detections/v2/update/" -Body $json
     }
 }
+
+<#
+.SYNOPSIS
+    Gets a list of all detection exceptions from the console.
+
+.PARAMETER API
+    Optional. API Handle (use only when not using session scope).
+#>
+
+function Get-CyDetectionExceptionList {
+    Param (
+        [parameter(Mandatory=$false)]
+        [CylanceAPIHandle]$API = $GlobalCyAPIHandle
+    )
+    Read-CyData -API $API -Uri "$($API.BaseUrl)/exceptions/v2" -QueryParams $params
+}
+
+
+<#
+.SYNOPSIS
+    Gets a definition for a detection exception
+
+.PARAMETER API
+    Optional. API Handle (use only when not using session scope).
+
+.PARAMETER Exception
+    The exception to retrieve (use object obtained with "Get-CyDetectionExceptionList")
+#>
+function Get-CyDetectionExceptionDetail {
+    Param (
+        [parameter(Mandatory=$false)]
+        [CylanceAPIHandle]$API = $GlobalCyAPIHandle,
+        [parameter(Mandatory=$true, ValueFromPipeline=$true)]
+        [object[]]$Exception
+    )
+
+    Begin {
+
+    }
+
+    Process {
+        Invoke-CyRestMethod -API $API -Method GET -Uri  "$($API.BaseUrl)/exceptions/v2/$($Exception.id)" | Convert-CyObject
+    }
+}

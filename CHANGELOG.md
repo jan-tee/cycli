@@ -1,5 +1,10 @@
 # Changelog
 
+## v.0.8.3
+* Added new OPTICS APIs:
+ * Get-CyDetectionExceptionList
+ * Get-CyDetectionExceptionDetail
+
 ## v.0.8.2
 * Updated application definitions retrieval logic with autocompletion
 * Changed autocompletion implementation across module
