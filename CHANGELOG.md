@@ -1,5 +1,8 @@
 # Changelog
 
+## v.0.8.5
+* Added Get-CyLockdownStatus
+
 ## v.0.8.4
 * Happy New Year 2019!
 * Added Update-CyZone API

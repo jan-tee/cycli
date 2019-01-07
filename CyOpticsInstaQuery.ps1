@@ -129,3 +129,23 @@ function Get-CyInstaQueries {
 
     Read-CyData -API $API -Uri "$($API.BaseUrl)/instaqueries/v2" -QueryParams $params
 }
+
+<#
+.SYNOPSIS
+    Gets the device lockdown status and history.
+
+.PARAMETER API
+    Optional. API Handle (use only when not using session scope).
+
+.PARAMETER Device
+    The device object to query for.
+#>
+function Get-CyLockdownStatus {
+    Param (
+        [parameter(Mandatory=$false)]
+        [CylanceAPIHandle]$API = $GlobalCyAPIHandle,
+        [parameter(Mandatory=$false)]
+        [object]$Device
+    )
+    Invoke-CyRestMethod -API $API -Method GET -Uri "$($API.BaseUrl)/devicecommands/v2/$($Device.id.ToUpper() -replace "-" )/lockdown" | Convert-CyObject
+}

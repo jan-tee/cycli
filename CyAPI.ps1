@@ -370,12 +370,12 @@ function Convert-CyObject {
         [PSCustomObject]$CyObject
         )
     Begin {
-        $fields = @("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified", "OccurrenceTime")
+        $fields = @("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified", "OccurrenceTime", "lockdown_expiration", "lockdown_initiated")
     }
     Process {
         foreach ($f in $fields) {
             try {
-                if (($null -ne $CyObject.$f) -and ($CyObject.$f -isnot [DateTime])) {
+                if (($null -ne $CyObject.$f) -and ($CyObject.$f -isnot [DateTime]) -and (![String]::IsNullOrEmpty($CyObject.$f))) {
                     Write-Verbose "Converting field $($f) (value: $($CyObject.$f)) to date time value"
                     $newval = ConvertFrom-CyDateString $CyObject.$f
                     # I think we hit a bug in PowerShell. Previous code was $CyObject.$f = $newval.
