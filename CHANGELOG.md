@@ -1,5 +1,9 @@
 # Changelog
 
+## v.0.8.4
+* Happy New Year 2019!
+* Added Update-CyZone API
+
 ## v.0.8.3
 * Added new OPTICS APIs:
  * Get-CyDetectionExceptionList

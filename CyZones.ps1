@@ -222,6 +222,7 @@ function Add-CyDeviceToZone {
         $null = Invoke-CyRestMethod -API $API -Method PUT -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)" -ContentType "application/json; charset=utf-8" -Body $json
     }
 }
+
 <#
 .SYNOPSIS
     Removes device(s) from zone(s).
@@ -269,4 +270,66 @@ function Remove-CyDeviceFromZone {
         # remain silent
         $null = Invoke-CyRestMethod -API $API -Method PUT -Uri "$($API.BaseUrl)/devices/v2/$($Device.id)" -ContentType "application/json; charset=utf-8" -Body $json
     }
+}
+
+<#
+.SYNOPSIS
+    Updates a zone.
+
+.PARAMETER API
+    Optional. API Handle (use only when not using session scope).
+
+.PARAMETER Zone
+    The zone to modify.
+
+.PARAMETER Name
+    Optional. Thenew  name of the zone.
+
+.PARAMETER Policy
+    Optional. The new policy to set as the policy for the zone. NOTE, this does NOT affect the policy set on any device assigned to the zone! This is by principle and you'll have to look at the Cylance docs to better understand what this means.
+
+.PARAMETER Criticality
+    Optional. The new criticality to set for the zone.
+#>
+function Update-CyZone {
+    Param (
+        [parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [CylanceAPIHandle]$API = $GlobalCyAPIHandle,
+        [Parameter(Mandatory=$true)]
+        [object]$Zone,
+        [String]$Name = $null,
+        [Parameter(Mandatory=$false)]
+        [object]$Policy = @{ id = $null},
+        [Parameter(Mandatory=$false)]
+        [ValidateSet("Low", "Normal", "High")]
+        [String]$Criticality
+    )
+
+    # default to existing
+    $updateMap = @{
+        name = $Zone.name
+        policy_id = $Zone.policy_id
+        criticality = $Zone.criticality
+    }
+
+    # update provided properties only
+    if (![String]::IsNullOrEmpty($Name)) {
+        $updateMap.name = $Name
+    }
+    if ($null -ne $Policy) {
+        if (![String]::IsNullOrEmpty($Policy.id)) {
+            $updateMap.policy_id = $Policy.id
+        } else {
+            $updateMap.policy_id = $Policy.policy_id
+        }
+    }
+    if (![String]::IsNullOrEmpty($Criticality)) {
+        $updateMap.criticality = $Criticality
+    }
+
+    $json = $updateMap | ConvertTo-Json
+    Write-Verbose "Update zone JSON: $json"
+    # remain silent
+    $null = Invoke-CyRestMethod -API $API -Method PUT -Uri "$($API.BaseUrl)/zones/v2/$($Zone.id)" -ContentType "application/json; charset=utf-8" -Body $json
 }
