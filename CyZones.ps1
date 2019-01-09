@@ -210,6 +210,14 @@ function Add-CyDeviceToZone {
     }
 
     Process {
+        if (($null -eq $Device) -or ($null -eq $Device.id) -or ([String]::IsNullOrEmpty($Device.id))) {
+            throw "Add-CyDeviceToZone: Device ID cannot be null or empty."
+        }
+
+        if (($null -eq $Device.policy) -or ($null -eq $Device.policy.id) -or ([String]::IsNullOrEmpty($Device.policy.id))) {
+            throw "Add-CyDeviceToZone: Device policy ID cannot be null or empty."
+        }
+
         $updateMap = @{
             "name" = $($Device.name)
             "policy_id" = $($Device.policy.id)

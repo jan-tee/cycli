@@ -1,5 +1,8 @@
 # Changelog
 
+## v.0.8.6
+* Add-CyDeviceToZone, when called with improper arguments, would still call the backend API. Backend API would not ignore the call, but execute an improper action. Added code to detect and prevent this from affecting CyCLI module users.
+
 ## v.0.8.5
 * Added Get-CyLockdownStatus
 
