@@ -43,6 +43,14 @@ function Set-CyPolicyForDevice {
 
     Begin
 	{
+        if (($null -eq $Device) -or ($null -eq $Device.id) -or ([String]::IsNullOrEmpty($Device.id))) {
+            throw "Set-CyPolicyForDevice: Device ID cannot be null or empty."
+        }
+
+        if (($null -eq $Device.policy) -or ($null -eq $Device.policy.id) -or ([String]::IsNullOrEmpty($Device.policy.id))) {
+            throw "Set-CyPolicyForDevice: Device policy ID cannot be null or empty."
+        }
+
 		if (([string]::IsNullOrEmpty($Policy.policy_id)) -and ([string]::IsNullOrEmpty($Policy.id)))
 		{
 			throw "Policy object does not contain 'policy_id' or 'id' property."
