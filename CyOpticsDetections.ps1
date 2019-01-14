@@ -151,30 +151,10 @@ function Remove-CyDetection {
     }
 
     Process {
-        # remain silent
-        switch ($PSCmdlet.ParameterSetName) {
-            "ByDeviceId" {
-                $devices += $DeviceId
-            }
-            "ByDevice" {
-                $devices += $Device.id
-            }
+        if (($null -eq $Detection) -or ($null -eq $Detection.id) -or ([String]::IsNullOrEmpty($Detection.id))) {
+            throw "Remove-CyDetection: Detection ID cannot be null or empty."
         }
-    }
-
-    End {
-        $updateMap = @{
-            "device_ids" = $devices
-        }
-
-        if (![String]::IsNullOrEmpty($CallbackUrl)) {
-            $updateMap += @{ "url" = $CallbackUrl }
-        }
-
-        $json = ConvertTo-Json $updateMap
-        Write-verbose "Update Map: $($json)"
-        # remain silent
-        $null = Invoke-CyRestMethod -API $API -Method DELETE -Uri "$($API.BaseUrl)/devices/v2" -ContentType "application/json; charset=utf-8" -Body $json
+        $null = Invoke-CyRestMethod -API $API -Method DELETE -Uri "$($API.BaseUrl)/detections/v2/$($Detection.id)" -ContentType "application/json; charset=utf-8"
     }
 }
 
