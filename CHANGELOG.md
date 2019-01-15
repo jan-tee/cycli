@@ -1,5 +1,9 @@
 # Changelog
 
+## v.0.8.9
+* New-CyInstaQuery - "description" is now auto-populated with "Name" when parameter is ommitted, because it is required by the backend API
+* Get-CyDeviceDetailByMac updated to support multi-device responses
+
 ## v.0.8.8
 * Remove-CyDetection added
 

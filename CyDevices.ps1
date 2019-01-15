@@ -149,6 +149,9 @@ function Get-CyDeviceDetailByMac {
         )
 
     Process {
-        Invoke-CyRestMethod -API $API -Method GET -Uri  "$($API.BaseUrl)/devices/v2/macaddress/$($MAC)" | Convert-CyObject
+        Invoke-CyRestMethod -API $API -Method GET -Uri "$($API.BaseUrl)/devices/v2/macaddress/$($MAC)" | 
+            ForEach-Object {
+                $_ | Convert-CyObject
+            }
     }
 }
