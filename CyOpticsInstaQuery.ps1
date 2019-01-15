@@ -65,8 +65,10 @@ function New-CyInstaQuery {
 
         if (![String]::IsNullOrEmpty($Description)) {
             $params.description = $Description
+        } else {
+            # cannot be empty.
+            $params.description = $Name
         }
-
 
         $json = '{"name":"powershe- Proc Name","description":"","artifact":"Process","match_value_type":"Name","match_values":["powershell.exe"],"case_sensitive":false,"match_type":"Fuzzy","zones":["979951FC8E724A51B31105AC19BC1C8B","2D567BB4B1144F77BD4EB4D2D111AB70"]}' | ConvertFrom-Json
         $json = ConvertTo-Json $json
