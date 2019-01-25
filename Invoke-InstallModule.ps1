@@ -32,6 +32,7 @@ Begin {
             'CyGlobalLists.ps1',
             'CyUsers.ps1',
             'CyOpticsDetections.ps1',
+            'CyOpticsRules.ps1',
             'CyOpticsPackages.ps1',
             'CyOpticsInstaQuery.ps1',
             'CyConvenience.ps1',

@@ -1,5 +1,18 @@
 # Changelog
 
+## v.0.9.1
+* Get-CyDeviceList now uses the now-supported page_size of 10000, which speeds up device record retrieval A LOT; performance enhancements to conversion.
+* Updated Read-CyData to accept a "Fields" parameter to restrict datetime conversion to certain fields
+* Exposed Convert-CyObject, added a "Fields" parameter to restrict datetime conversion to certain fields
+
+## v.0.9.0
+* Get-CyDetectionRuleList added
+* Get-CyDetectionRuleDetail added.
+* Get-CyDetectionExceptionList added
+* Get-CyDetectionExceptionDetail added
+* Added Optics' "ActivationTime" field datetime conversion support
+* Introduced "IsDirty" property to track write operations, in preparation of adding simple caching to the module.
+
 ## v.0.8.9
 * New-CyInstaQuery - "description" is now auto-populated with "Name" when parameter is ommitted, because it is required by the backend API
 * Get-CyDeviceDetailByMac updated to support multi-device responses
