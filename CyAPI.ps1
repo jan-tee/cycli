@@ -24,6 +24,7 @@ Class CylanceAPIHandle {
     [string]$APITenantId
     [datetime]$ExpirationTime
     [string]$Scope
+    [bool]$IsDirty      # $true when there was any write operation attempted at all
 }
 
 Class CylanceGlobalSettings {
@@ -262,14 +263,19 @@ function Read-CyData {
         [parameter(Mandatory=$true)]
         [string]$Uri,
         [parameter(Mandatory=$false)]
-        [Hashtable]$QueryParams = @{}
+        [Hashtable]$QueryParams = @{},
+        [parameter(Mandatory=$false)]
+        [int]$PageSize = 200,
+        [Parameter(Mandatory=$false)]
+        [ValidateSet("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified", "OccurrenceTime", "ActivationTime", "lockdown_expiration", "lockdown_initiated")]
+        [String[]]$Fields = @("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified", "OccurrenceTime", "ActivationTime", "lockdown_expiration", "lockdown_initiated")
         )
 
     $page = 1
-    do {
+    $devices = do {
         $params = @{
             "page" = $page
-            "page_size" = 200
+            "page_size" = $PageSize
         }
         foreach ($key in $QueryParams.Keys) {
             $params.$key = $QueryParams.$key
@@ -288,13 +294,13 @@ function Read-CyData {
 
         $resp = Invoke-CyRestMethod @rest
 
-        $resp.page_items | foreach-object {
-            $_ | Convert-CyObject
-        }
+        $resp.page_items
         Write-Verbose "Response was page $($resp.page_number) of $($resp.total_pages) pages"
 
         $page++
     } while ($resp.page_number -lt $resp.total_pages)
+    
+    $devices | Convert-CyObject -Fields $Fields
 }
 
 <#
@@ -362,18 +368,30 @@ function ConvertTo-CyDateString {
 
 <#
 .SYNOPSIS
-    Converts all "date" strings received through the JSON API and turns them into "date" objects.
+    Converts "date" strings received through the JSON API and turns them into "date" properties.
+
+.NOTES
+    When you omit the "Field" parameter and all fields are checked vs. e.g. 2, the performance difference is significant:
+
+    139451 device records, converting only "date_offline,date_first_registered": 53.8 seconds
+    139451 device records, converting all  "date_offline,date_first_registered": 203.6 seconds
+
+.PARAMETER Fields
+    Optional. The list of field names to attempt to convert to datetime. Will attempt to convert all known datetime fields if not given. Can be used to optimize performance when processing many objects in a pipeline.
 #>
 function Convert-CyObject {
     Param (
         [Parameter(Mandatory=$true, Position=1, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)]
-        [PSCustomObject]$CyObject
+        [PSCustomObject]$CyObject,
+        [Parameter(Mandatory=$false)]
+        [ValidateSet("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified", "OccurrenceTime", "ActivationTime", "lockdown_expiration", "lockdown_initiated")]
+        [String[]]$Fields = @("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified", "OccurrenceTime", "ActivationTime", "lockdown_expiration", "lockdown_initiated")
         )
     Begin {
-        $fields = @("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified", "OccurrenceTime", "lockdown_expiration", "lockdown_initiated")
     }
     Process {
-        foreach ($f in $fields) {
+        $Fields | ForEach-Object { 
+            $f = $_
             try {
                 if (($null -ne $CyObject.$f) -and ($CyObject.$f -isnot [DateTime]) -and (![String]::IsNullOrEmpty($CyObject.$f))) {
                     Write-Verbose "Converting field $($f) (value: $($CyObject.$f)) to date time value"
@@ -514,4 +532,8 @@ function Invoke-CyRestMethod {
         Write-Verbose "Invoking CyREST method using params: $($rest | Out-String)"
 
         Invoke-RestMethod @rest
+
+        if (($null -ne $API) -and ($Method -match "(PUT|POST|DELETE)")) {
+            $API.IsDirty = $true
+        }
 }

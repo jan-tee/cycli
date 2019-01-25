@@ -29,10 +29,10 @@ function Get-CyDeviceList {
             Get-CyDeviceList -API $API -Zone $Zone
         }
         "ByZone" {
-            Read-CyData -API $API -Uri "$($API.BaseUrl)/devices/v2/$($Zone.id)/devices"
+            Read-CyData -API $API -Uri "$($API.BaseUrl)/devices/v2/$($Zone.id)/devices" -PageSize 10000 -Fields date_offline,date_first_registered
         }
         "All" {
-            Read-CyData -API $API -Uri "$($API.BaseUrl)/devices/v2"
+            Read-CyData -API $API -Uri "$($API.BaseUrl)/devices/v2" -PageSize 10000 -Fields date_offline,date_first_registered
         }
     }
 }
