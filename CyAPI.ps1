@@ -384,8 +384,8 @@ function Convert-CyObject {
         [Parameter(Mandatory=$true, Position=1, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)]
         [PSCustomObject]$CyObject,
         [Parameter(Mandatory=$false)]
-        [ValidateSet("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified", "OccurrenceTime", "ActivationTime", "lockdown_expiration", "lockdown_initiated")]
-        [String[]]$Fields = @("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified", "OccurrenceTime", "ActivationTime", "lockdown_expiration", "lockdown_initiated")
+        [ValidateSet("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified", "OccurrenceTime", "ActivationTime", "lockdown_expiration", "lockdown_initiated", "last_found")]
+        [String[]]$Fields = @("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified", "OccurrenceTime", "ActivationTime", "lockdown_expiration", "lockdown_initiated", "last_found")
         )
     Begin {
     }
@@ -529,7 +529,9 @@ function Invoke-CyRestMethod {
             }
         }
 
-        Write-Verbose "Invoking CyREST method using params: $($rest | Out-String)"
+        Write-Verbose "Invoking CyREST method using REST params:"
+        Write-Verbose "$($rest | Select-Object -ExcludeProperty Body | ConvertTo-Json)"
+        Write-Verbose "Body: $($rest | Select-Object Body)"
 
         Invoke-RestMethod @rest
 
