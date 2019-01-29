@@ -63,7 +63,7 @@ function Add-CyHashToGlobalList {
             Mandatory=$true, 
             ValueFromPipeline=$true,
             ValueFromPipelineByPropertyName=$true)]
-        [String]$SHA256,
+        [String[]]$SHA256,
         [Parameter(Mandatory=$false)]
         [ValidateSet ("Admin Tool", "Commercial Software", "Drivers", "Internal Application", "Operating System", "Security Software", "None")]
         [String]$Category,
