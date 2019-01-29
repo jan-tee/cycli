@@ -1,5 +1,16 @@
 # Changelog
 
+## v.0.9.4
+* Small fixes to threat handling
+* 
+
+## v.0.9.3
+* Added last_found to converted fields for Convert-CyObject
+
+## v.0.9.2
+* Better safeguards in Set-CyPolicyForDevice
+* Get-CyThreatList added
+
 ## v.0.9.1
 * Get-CyDeviceList now uses the now-supported page_size of 10000, which speeds up device record retrieval A LOT; performance enhancements to conversion.
 * Updated Read-CyData to accept a "Fields" parameter to restrict datetime conversion to certain fields
