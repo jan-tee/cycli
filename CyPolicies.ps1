@@ -43,14 +43,6 @@ function Set-CyPolicyForDevice {
 
     Begin
 	{
-        if (($null -eq $Device) -or ($null -eq $Device.id) -or ([String]::IsNullOrEmpty($Device.id))) {
-            throw "Set-CyPolicyForDevice: Device ID cannot be null or empty."
-        }
-
-        if (($null -eq $Device.policy) -or ($null -eq $Device.policy.id) -or ([String]::IsNullOrEmpty($Device.policy.id))) {
-            throw "Set-CyPolicyForDevice: Device policy ID cannot be null or empty."
-        }
-
 		if (([string]::IsNullOrEmpty($Policy.policy_id)) -and ([string]::IsNullOrEmpty($Policy.id)))
 		{
 			throw "Policy object does not contain 'policy_id' or 'id' property."
@@ -67,16 +59,23 @@ function Set-CyPolicyForDevice {
 		{
 			if(($Policy.policy_id).tostring() -eq ($Policy.id).tostring())
 			{
-			$PolicyID = $policy.id
+			    $PolicyID = $policy.id
 			}
 			else
 			{
-			throw 'Different value found in policy_id and id, expected to be the same'	
+			    throw 'Different value found in policy_id and id, expected to be the same'	
 			}
 		}
 	}
 
     Process {
+        if (($null -eq $Device) -or ($null -eq $Device.id) -or ([String]::IsNullOrEmpty($Device.id))) {
+            throw "Set-CyPolicyForDevice: Device ID cannot be null or empty."
+        }
+        if (($null -eq $Device.policy) -or ($null -eq $Device.policy.id) -or ([String]::IsNullOrEmpty($Device.policy.id))) {
+            throw "Set-CyPolicyForDevice: Device policy ID cannot be null or empty."
+        }
+       
         $updateMap = @{
             "name" = $($Device.name)
             "policy_id" = $PolicyID
@@ -435,6 +434,11 @@ function New-CyPolicy {
         if ($User -match ".+@.+") {
             $User = Get-CyUserByEmail -API $API -Email $User
         }
+
+        if ($null -eq $($User.id)) {
+            Throw "ID not found in user object"
+            return
+        }
     }
 
     Process {
@@ -514,16 +518,15 @@ function Copy-CyPolicy {
         [object]$User
     )
 
-    # support passing the email address instead of a user object
-    if ($User -match ".+@.+") {
-        $User = Get-CyUserByEmail -API $API -Email $User
-    }
-
-    $shallowPolicy = Get-CyPolicyList | where name -eq $SourcePolicyName
+    $shallowPolicy = Get-CyPolicyList | Where-Object name -eq $SourcePolicyName
     $policy = Get-CyPolicy -API $API -Policy $shallowPolicy
 
-    New-CyPolicy -Policy $policy -User $User -Name $TargetPolicyName -Verbose
+    if ($null -eq $policy) {
+        throw "Source policy not found"
+        return
+    }
 
+    New-CyPolicy -Policy $policy -User $User -Name $TargetPolicyName
 }
 
 <#
