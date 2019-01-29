@@ -33,6 +33,10 @@ Class CylanceGlobalSettings {
     [bool]$ProxyUseDefaultCredentials
 }
 
+# constants
+$script:FieldsValidateSet = @("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified", "OccurrenceTime", "ActivationTime", "ReceivedTime", "lockdown_expiration", "lockdown_initiated", "last_found")
+
+
 <#
 .TODO
     At some point In the future, artifacts for the API will be classes... if I can figure out how to use dynamic properties in Powershell.
@@ -254,6 +258,11 @@ function Get-CyGlobalSettings {
 
 .PARAMETER QueryParams
     Optional. If you need to add any query parameters, supply them in a Hashtable.
+
+.PARAMETER Fields
+    Optional. If you wish to apply non-standard (non-JSON) value conversion on
+    only certain fields (typically date/time fields), you can speed up the
+    processing by explicitly listing these here.
 #>
 function Read-CyData {
     Param (
@@ -267,8 +276,9 @@ function Read-CyData {
         [parameter(Mandatory=$false)]
         [int]$PageSize = 200,
         [Parameter(Mandatory=$false)]
-        [ValidateSet("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified", "OccurrenceTime", "ActivationTime", "lockdown_expiration", "lockdown_initiated")]
-        [String[]]$Fields = @("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified", "OccurrenceTime", "ActivationTime", "lockdown_expiration", "lockdown_initiated")
+        # copy from $script:FieldsValidateSet
+        [ValidateSet("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified", "OccurrenceTime", "ActivationTime", "ReceivedTime", "lockdown_expiration", "lockdown_initiated")]
+        [String[]]$Fields = @("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified", "OccurrenceTime", "ActivationTime", "ReceivedTime", "lockdown_expiration", "lockdown_initiated")
         )
 
     $page = 1
@@ -300,7 +310,9 @@ function Read-CyData {
         $page++
     } while ($resp.page_number -lt $resp.total_pages)
     
-    $devices | Convert-CyObject -Fields $Fields
+    if ($null -ne $devices) {
+        $devices | Convert-CyObject -Fields $Fields
+    }
 }
 
 <#
@@ -384,8 +396,9 @@ function Convert-CyObject {
         [Parameter(Mandatory=$true, Position=1, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)]
         [PSCustomObject]$CyObject,
         [Parameter(Mandatory=$false)]
-        [ValidateSet("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified", "OccurrenceTime", "ActivationTime", "lockdown_expiration", "lockdown_initiated", "last_found")]
-        [String[]]$Fields = @("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified", "OccurrenceTime", "ActivationTime", "lockdown_expiration", "lockdown_initiated", "last_found")
+        # copy from $script:FieldsValidateSet
+        [ValidateSet("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified", "OccurrenceTime", "ActivationTime", "ReceivedTime", "lockdown_expiration", "lockdown_initiated", "last_found")]
+        [String[]]$Fields = @("date_first_registered", "date_offline", "date_last_modified", "date_found", "cert_timestamp", "date_last_login", "date_email_confirmed", "date_created", "date_modified", "OccurrenceTime", "ActivationTime", "ReceivedTime", "lockdown_expiration", "lockdown_initiated", "last_found")
         )
     Begin {
     }

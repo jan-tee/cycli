@@ -71,7 +71,7 @@ function Get-CyDetectionList {
         $params.sort = $Sort
     }
 
-    Read-CyData -API $API -Uri "$($API.BaseUrl)/detections/v2" -QueryParams $params
+    Read-CyData -API $API -Uri "$($API.BaseUrl)/detections/v2" -QueryParams $params -Fields "OccurrenceTime"
 }
 
 <#
@@ -90,10 +90,10 @@ function Get-CyDetectionRecentList {
     )
 
     $params = @{
-        Since = ConvertTo-CyDateString -Date $Since
+        since = ConvertTo-CyDateString -Date $Since
     }   
 
-    Read-CyData -API $API -Uri "$($API.BaseUrl)/detections/v2/recent" -QueryParams $params
+    Read-CyData -API $API -Uri "$($API.BaseUrl)/detections/v2/recent" -QueryParams $params -Fields OccurrenceTime
 }
 
 
@@ -121,7 +121,7 @@ function Get-CyDetectionDetail {
 
     Process
     {
-        Invoke-CyRestMethod -API $API -Method GET -Uri  "$($API.BaseUrl)/detections/v2/$($Detection.id)/details" | Convert-CyObject
+        Invoke-CyRestMethod -API $API -Method GET -Uri  "$($API.BaseUrl)/detections/v2/$($Detection.id)/details" | Convert-CyObject -Fields "OccurrenceTime", "ActivationTime", "ReceivedTime"
     }
 }
 
