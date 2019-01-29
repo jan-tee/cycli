@@ -1,5 +1,22 @@
 ﻿<#
 .SYNOPSIS
+    Gets the threat list
+
+.PARAMETER API
+    Optional. API Handle (use only when not using session scope).
+#>
+function Get-CyThreatList {
+    Param (
+        [parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [CylanceAPIHandle]$API = $GlobalCyAPIHandle
+        )
+
+    Read-CyData -API $API -Uri "$($API.BaseUrl)/threats/v2"
+}
+
+<#
+.SYNOPSIS
     Gets the threat list for the given device
 
 .PARAMETER API
@@ -102,22 +119,26 @@ function Update-CyDeviceThreat {
     Optional. API Handle (use only when not using session scope).
 
 .PARAMETER SHA256
-    A collection of SHA256 values (as strings) to retrieve the data for.
+    A collection of SHA256 values (as strings) to retrieve the data for, or threat objects with a "sha256" property.
 #>
 function Get-CyThreatDetail {
     Param (
         [parameter(Mandatory=$false)]
         [ValidateNotNullOrEmpty()]
         [CylanceAPIHandle]$API = $GlobalCyAPIHandle,
-        [Parameter(
-            Mandatory=$true, 
-            ValueFromPipeline=$true,
-            ValueFromPipelineByPropertyName=$true)]
-            [String[]]$SHA256
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)]
+        [object]$SHA256
         )
 
     Process {
-        Invoke-CyRestMethod -API $API -Method GET -Uri  "$($API.BaseUrl)/threats/v2/$($SHA256)" | Convert-CyObject
+        if ($SHA256 -is [String]) {
+            $Hash = $SHA256
+        } elseif (![String]::IsNullOrEmpty($SHA256.sha256)) {
+            $Hash = $SHA256.sha256
+        } else {
+            Throw "Cannot determine SHA256 value from threat object"
+        }
+        Invoke-CyRestMethod -API $API -Method GET -Uri  "$($API.BaseUrl)/threats/v2/$($Hash)" | Convert-CyObject
     }
 }
 
@@ -164,11 +185,19 @@ function Get-CyThreatDeviceList {
         [parameter(Mandatory=$false)]
         [ValidateNotNullOrEmpty()]
         [CylanceAPIHandle]$API = $GlobalCyAPIHandle,
-        [Parameter(Mandatory=$true,ParameterSetName="ByDevice",ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)]
         [object]$SHA256
         )
 
     Process {
-        Read-CyData -API $API -Uri "$($API.BaseUrl)/threats/v2/$($SHA256)/devices"
+        if ($SHA256 -is [String]) {
+            $Hash = $SHA256
+        } elseif (![String]::IsNullOrEmpty($SHA256.sha256)) {
+            $Hash = $SHA256.sha256
+        } else {
+            Throw "Cannot determine SHA256 value from threat object"
+        }
+
+        Read-CyData -API $API -Uri "$($API.BaseUrl)/threats/v2/$($Hash)/devices"
     }
 }
