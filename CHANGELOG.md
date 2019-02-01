@@ -2,6 +2,7 @@
 
 ## v.0.9.5
 * Reverted an (unreleased-to-powershellgallery) change to Add-CyHashToGlobalList because it had introduced buggy behavior
+* Performance improvements to type conversion
 
 ## v.0.9.4
 * Small fixes to threat handling
