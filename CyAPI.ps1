@@ -403,8 +403,7 @@ function Convert-CyObject {
     Begin {
     }
     Process {
-        $Fields | ForEach-Object { 
-            $f = $_
+        ForEach ($f in $Fields) { 
             try {
                 if (($null -ne $CyObject.$f) -and ($CyObject.$f -isnot [DateTime]) -and (![String]::IsNullOrEmpty($CyObject.$f))) {
                     Write-Verbose "Converting field $($f) (value: $($CyObject.$f)) to date time value"
