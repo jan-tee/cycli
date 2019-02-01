@@ -1,8 +1,10 @@
 # Changelog
 
+## v.0.9.5
+* Reverted an (unreleased-to-powershellgallery) change to Add-CyHashToGlobalList because it had introduced buggy behavior
+
 ## v.0.9.4
 * Small fixes to threat handling
-* 
 
 ## v.0.9.3
 * Added last_found to converted fields for Convert-CyObject
