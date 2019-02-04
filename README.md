@@ -94,11 +94,19 @@ $z = Create-CyZone -Name "TESTOMAT" -Criticality Low
 $d | Add-CyDeviceToZone -Zone $z
 ```
 
-To obtain the details of all threats in the environment:
+To obtain the details of all threats in the environment, you can either enumerate all threats for each device:
+
 ```powershell
-$threats = Get-CyDeviceList | Get-CyDeviceThreats
+$threats = Get-CyDeviceList | Get-CyDeviceThreatList
 $threatDetails = $threats.sha256 | Get-CyThreatDetails
 ```
+
+Or get the whole list of threats:
+```powershell
+$threats = Get-CyThreatList
+```
+
+(and then, if you need instance details, use `Get-CyThreatDeviceList`)
 
 # TODO
  - Automatic substitution of illegal characters in e.g. zone names to prevent API errors
