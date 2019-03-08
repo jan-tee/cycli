@@ -1,5 +1,8 @@
 # Changelog
 
+## v.0.9.6
+* Fixed a bug in Get-CyZone where retrieving by name would not work when an "API" parameter was present (Scope = None). Thank you to Philip Hohl for reporting the issue.
+
 ## v.0.9.5
 * Reverted an (unreleased-to-powershellgallery) change to Add-CyHashToGlobalList because it had introduced buggy behavior
 * Performance improvements to type conversion

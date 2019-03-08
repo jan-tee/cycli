@@ -76,7 +76,7 @@ function Get-CyZone {
         {
             "ByZoneName" {
                 Write-Verbose "Get-CyZone: Getting zone by name '$($Name)'"
-                Get-CyZoneList | Where-Object name -eq $Name
+                Get-CyZoneList -API $API | Where-Object name -eq $Name
             }
             "ByZoneObject" {
                 Write-Verbose "Get-CyZone: Getting zone via zone object for zone ID '$($Zone.id)'"
