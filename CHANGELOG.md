@@ -1,5 +1,8 @@
 # Changelog
 
+## v.0.9.7
+* Fixed a bug in Set-CyPolicyForDevice where setting policy would not when the device record was not either a full record, or a shallow record (from devicelist), but a devicelist -perzone record. Thank you to Philip Hohl for reporting the issue.
+
 ## v.0.9.6
 * Fixed a bug in Get-CyZone where retrieving by name would not work when an "API" parameter was present (Scope = None). Thank you to Philip Hohl for reporting the issue.
 
