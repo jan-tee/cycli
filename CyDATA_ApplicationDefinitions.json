@@ -17,8 +17,8 @@
             "c:\\windows\\ccm\\systemtemp\\"
         ],
         "script_allowed_folders": [
-            "c:/windows/ccm/systemtemp/*.vbs",
-            "c:/windows/ccm/systemtemp/*.ps1"
+            "/windows/ccm/systemtemp/*.vbs",
+            "/windows/ccm/systemtemp/*.ps1"
         ]
     },
     {
